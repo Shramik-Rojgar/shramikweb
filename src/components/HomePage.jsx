@@ -9,17 +9,17 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
 
   // Header Actions
   const headerActions = (
-    <div className="flex items-center gap-3 sm:gap-6 font-bold text-xs sm:text-sm">
+    <div className="flex items-center gap-2 sm:gap-4 font-bold text-[11px] sm:text-sm">
       <button 
         onClick={() => onNavigate('signup', 'login')} 
-        className="text-shramik-navy hover:text-kaam-orange transition-colors cursor-pointer"
+        className="text-shramik-navy hover:text-kaam-orange transition-colors cursor-pointer px-1 py-1"
         id="btn-nav-login"
       >
         {t.navLogin}
       </button>
       <button 
         onClick={() => onNavigate('signup', 'choose')}
-        className="bg-shramik-navy hover:bg-shramik-navy-hover text-white py-1.5 px-3 sm:py-2.5 sm:px-6 rounded-xl transition-all duration-200 cursor-pointer"
+        className="bg-shramik-navy hover:bg-shramik-navy-hover text-white py-1 px-2.5 sm:py-2 sm:px-4 rounded-lg sm:rounded-xl transition-all duration-200 cursor-pointer"
         id="btn-nav-signup"
       >
         {t.navSignup}
