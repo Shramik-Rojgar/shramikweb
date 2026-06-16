@@ -97,7 +97,7 @@ export default function AboutUsPage({ onNavigate, language = 'hi', onLanguageCha
         
         {/* 1. HERO SECTION */}
         <section className="text-center">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4 font-display text-[var(--ink)]">
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4 font-display text-brand-grad">
             {t.title}
           </h1>
           <h2 className="text-xl md:text-2xl font-bold text-[var(--accent)] mb-4 font-display">

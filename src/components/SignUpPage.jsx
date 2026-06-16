@@ -99,7 +99,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
       />
       
       <main className="max-w-6xl mx-auto px-6 py-12 md:py-16 text-center flex-grow flex flex-col justify-center w-full z-10">
-        <h1 className="text-4xl md:text-5xl font-black text-[var(--ink)] tracking-tight mb-4 font-display">
+        <h1 className="text-4xl md:text-5xl font-black text-brand-grad tracking-tight mb-4 font-display">
           {t.title}
         </h1>
         <p className="text-base md:text-lg text-[var(--mut)] max-w-2xl mx-auto mb-16 leading-relaxed font-semibold">

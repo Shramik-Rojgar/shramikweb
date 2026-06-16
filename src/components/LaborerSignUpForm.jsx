@@ -204,7 +204,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
 
       <main className="max-w-xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
         <div className="glass-card rounded-3xl p-5 sm:p-8 md:p-10">
-          <h2 className="text-3xl font-bold text-ink mb-2 font-display">{t.title}</h2>
+          <h2 className="text-3xl font-bold text-brand-grad mb-2 font-display">{t.title}</h2>
           <p className="text-slate-500 text-sm mb-8 font-semibold">{t.subtitle}</p>
 
           {isSuccess ? (

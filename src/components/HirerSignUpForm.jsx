@@ -109,7 +109,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
 
       <main className="max-w-md w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
         <div className="glass-card rounded-3xl p-5 sm:p-8">
-          <h2 className="text-2xl font-bold text-[#14101C] mb-2 font-display">{t.title}</h2>
+          <h2 className="text-2xl font-bold text-brand-grad mb-2 font-display">{t.title}</h2>
           <p className="text-slate-500 text-sm mb-6 font-semibold">{t.subtitle}</p>
 
           {isSuccess ? (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Users, HardHat, UserPlus, Info } from 'lucide-react';
+import { ArrowLeft, UserPlus, Info, Home } from 'lucide-react';
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
 import {
@@ -14,7 +14,7 @@ export default function Header({
   theme = 'light', 
   onNavigate, 
   onBack, 
-  activeTab, // 'hire' | 'work' | 'signup' | 'about'
+  activeTab, // 'hire' | 'work' | 'signup' | 'about' | 'home'
   language = 'hi',
   onLanguageChange,
   setAud
@@ -50,26 +50,11 @@ export default function Header({
         {!onBack && (
           <div className="seg text-xs md:text-sm">
             <button 
-              className={cn("seg-btn cursor-pointer", activeTab === 'hire' && "on")} 
-              onClick={() => {
-                if (setAud) setAud('hire');
-                onNavigate('home');
-              }}
+              className={cn("seg-btn cursor-pointer", (activeTab === 'home' || activeTab === 'hire' || activeTab === 'work') && "on")} 
+              onClick={() => onNavigate('home')}
             >
-              <Users className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{language === 'hi' ? 'काम कराएँ' : 'Hire'}</span>
-              <span className="sm:hidden">{language === 'hi' ? 'नियोक्ता' : 'Hire'}</span>
-            </button>
-            <button 
-              className={cn("seg-btn cursor-pointer", activeTab === 'work' && "on")} 
-              onClick={() => {
-                if (setAud) setAud('work');
-                onNavigate('home');
-              }}
-            >
-              <HardHat className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{language === 'hi' ? 'काम पाएँ' : 'Work'}</span>
-              <span className="sm:hidden">{language === 'hi' ? 'कामगार' : 'Work'}</span>
+              <Home className="w-3.5 h-3.5" />
+              <span>{language === 'hi' ? 'मुख्य पृष्ठ' : 'Home'}</span>
             </button>
             <button 
               className={cn("seg-btn cursor-pointer", activeTab === 'signup' && "on")} 

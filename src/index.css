@@ -355,6 +355,7 @@ body {
   .stats-grid { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
   .values { grid-template-columns: 1fr; }
+  .skill-grid { grid-template-columns: 1fr 1fr; }
   .section { padding: 40px 0; }
   .sec-head h2 { font-size: 31px; }
   .cta-banner { padding: 36px 22px; }

@@ -60,53 +60,29 @@ const SKILLS = [
   { key: 'domestic',    ic: 'home',    hi: 'घरेलू सहायक',    en: 'Domestic help' },
 ];
 
-const RECENT_WORKERS = [
-  { hi: 'रामू कुमार', en: 'Ramu K.', sk_hi: 'राजमिस्त्री', sk_en: 'Mason' },
-  { hi: 'सुनील यादव', en: 'Sunil Y.', sk_hi: 'पुताई', sk_en: 'Painter' },
-  { hi: 'अकबर अली', en: 'Akbar A.', sk_hi: 'बिजली', sk_en: 'Electrician' },
-  { hi: 'मोहन लाल', en: 'Mohan L.', sk_hi: 'प्लंबर', sk_en: 'Plumber' },
-];
-
-const RECENT_HIRERS = [
-  { hi: 'डीएलएफ़ फेज़ 3', en: 'DLF Phase 3', sk_hi: '3 राजमिस्त्री', sk_en: '3 masons' },
-  { hi: 'सुशांत लोक', en: 'Sushant Lok', sk_hi: '2 पुताई', sk_en: '2 painters' },
-  { hi: 'सेक्टर 57', en: 'Sector 57', sk_hi: '1 बिजली', sk_en: '1 electrician' },
-  { hi: 'गोल्फ़ कोर्स रोड', en: 'Golf Course Rd', sk_hi: '4 बेलदार', sk_en: '4 helpers' },
+const COMBINED_TICKER_DATA = [
+  { hi: 'रामू कुमार', en: 'Ramu K.', sk_hi: 'राजमिस्त्री', sk_en: 'Mason', verb_hi: 'जुड़े', verb_en: 'joined' },
+  { hi: 'डीएलएफ़ फेज़ 3', en: 'DLF Phase 3', sk_hi: '3 राजमिस्त्री', sk_en: '3 masons', verb_hi: 'मांगे', verb_en: 'requested' },
+  { hi: 'सुनील यादव', en: 'Sunil Y.', sk_hi: 'पुताई', sk_en: 'Painter', verb_hi: 'जुड़े', verb_en: 'joined' },
+  { hi: 'सुशांत लोक', en: 'Sushant Lok', sk_hi: '2 पुताई', sk_en: '2 painters', verb_hi: 'मांगे', verb_en: 'requested' },
+  { hi: 'अकबर अली', en: 'Akbar A.', sk_hi: 'बिजली', sk_en: 'Electrician', verb_hi: 'जुड़े', verb_en: 'joined' },
+  { hi: 'सेक्टर 57', en: 'Sector 57', sk_hi: '1 बिजली', sk_en: '1 electrician', verb_hi: 'मांगे', verb_en: 'requested' },
+  { hi: 'मोहन लाल', en: 'Mohan L.', sk_hi: 'प्लंबर', sk_en: 'Plumber', verb_hi: 'जुड़े', verb_en: 'joined' },
+  { hi: 'गोल्फ़ कोर्स रोड', en: 'Golf Course Rd', sk_hi: '4 बेलदार', sk_en: '4 helpers', verb_hi: 'मांगे', verb_en: 'requested' }
 ];
 
 export default function HomePage({ onNavigate, language = 'hi', onLanguageChange, aud = 'hire', setAud }) {
   const [openFaq, setOpenFaq] = useState(null);
+  const [howItWorksTab, setHowItWorksTab] = useState('hire'); // 'hire' | 'work'
+  const [faqTab, setFaqTab] = useState('hire'); // 'hire' | 'work'
 
   const L = (o) => (o ? (language === 'hi' ? o.hi : o.en) : '');
   
-  const isHire = aud === 'hire';
-  const t = translations[language].prelaunch[aud];
+  const tHire = translations[language].prelaunch.hire;
+  const tWork = translations[language].prelaunch.work;
   const tCommon = translations[language].prelaunch.common;
 
-  const scrollToJoin = () => {
-    const el = document.getElementById('join');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
 
-  // Speaks details of the form for low-literacy users
-  const speakForm = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const text = language === 'hi'
-        ? (isHire 
-            ? 'पहले दिन से कुशल कारीगर पाएँ। अर्ली एक्सेस लिस्ट के लिए कृपया अपना नाम, मोबाइल नंबर और साइट का स्थान दर्ज करें।' 
-            : '३० सेकंड में सीधे जुड़ें। अपना मोबाइल नंबर, काम का हुनर और रहने का इलाका दर्ज करें।')
-        : (isHire 
-            ? 'Get workers from day one. For early access, please enter your name, mobile number, and site location.' 
-            : 'Join in 30 seconds. Enter your mobile number, select your skill, and write your location.');
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = language === 'hi' ? 'hi-IN' : 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-transparent text-[#14101C] font-sans flex flex-col justify-between overflow-x-hidden">
@@ -123,7 +99,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
       <Header 
         theme="light" 
         onNavigate={onNavigate} 
-        activeTab={aud} 
+        activeTab="home" 
         language={language} 
         onLanguageChange={onLanguageChange} 
         setAud={setAud}
@@ -132,48 +108,43 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
       {/* Main Container */}
       <div className="wrap flex-grow">
         
-        {/* 1. HERO SECTION */}
-        <header className="hero container">
+        {/* 1. HIRE SECTION (Text Left, Image Right) */}
+        <header id="hire-section" className="hero container" style={{ scrollMarginTop: '80px' }}>
           <div className="hero-grid">
             
             {/* Left Copy Column */}
             <div className="hero-copy text-left">
               <div className="eyebrow">
                 <span className="pulse live-dot" style={{ background: 'var(--saffron)', boxShadow: '0 0 0 4px rgba(255,138,30,0.18)' }}></span>
-                <span>{t.eyebrow}</span>
+                <span>{tHire.eyebrow}</span>
               </div>
               <h1 className="h1">
-                {t.h1a}<br />
-                <span className="grad">{t.h1b}</span>
+                {tHire.h1a}<br />
+                <span className="grad">{tHire.h1b}</span>
               </h1>
-              <p className="sub">{t.sub}</p>
+              <p className="sub">{tHire.sub}</p>
               
               <div className="hero-actions">
-                <button className="cta font-sans" onClick={scrollToJoin}>
-                  <span>{t.navCta}</span>
+                <button className="cta font-sans" onClick={() => onNavigate('signup')}>
+                  <span>{tHire.navCta}</span>
                   <Ic d={I.arrow} size={18} color="#fff" sw={2.6} />
-                </button>
-                <button 
-                  className="cta-ghost font-sans" 
-                  onClick={() => setAud(isHire ? 'work' : 'hire')}
-                >
-                  <span>{isHire ? tCommon.lookingForWork : tCommon.needWorkers}</span>
-                  <Ic d={I.arrow} size={16} color="var(--accent)" sw={2.4} />
                 </button>
               </div>
 
               <div className="pill-row">
-                {t.pills.map((p, i) => (
+                {tHire.pills.map((p, i) => (
                   <span key={i} className="pill">
                     <Ic d={I[p.ic]} size={15} color="var(--green)" sw={2.2} />
                     <span>{p.text}</span>
                   </span>
                 ))}
               </div>
+            </div>
 
-              {/* Hero Image / Ground Team Slot */}
-              <div className="hero-image-slot mt-6 rounded-2xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-1.5 shadow-sm max-w-md">
-                <div className="relative aspect-video rounded-xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
+            {/* Right Image Column */}
+            <div className="hero-image-col">
+              <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
+                <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
                   <img 
                     src="/team_with_workers.png" 
                     className="w-full h-full object-cover" 
@@ -181,7 +152,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
-                    <span className="text-[10px] font-extrabold text-[var(--ink)] bg-white/90 px-3 py-1.5 rounded-full uppercase tracking-wider font-sans border border-slate-200 shadow-sm flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[var(--ink)] bg-white/95 px-3.5 py-2 rounded-full uppercase tracking-wider font-sans border border-slate-200 shadow-sm flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-pulse"></span>
                       {language === 'hi' ? 'श्रमिक ग्राउंड टीम' : 'Shramik Ground Team'}
                     </span>
@@ -190,57 +161,100 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               </div>
             </div>
 
-            {/* Right Form Column */}
-            <div className="hero-form-col text-left">
-              <HeroForm 
-                aud={aud} 
-                t={t} 
-                language={language} 
-                tCommon={tCommon}
-                speakForm={speakForm}
-              />
-
-              {/* Missed Call Banner for worker paths */}
-              {!isHire && (
-                <div className="missed glass">
-                  <div className="ic">
-                    <Ic d={I.phone} size={22} color="var(--green)" sw={2} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="t1 font-sans font-bold">{tCommon.cantFillPhone}</div>
-                    <div className="t2 font-sans">{tCommon.missedCallInstructions}</div>
-                    <div className="num font-display font-black text-xl mt-0.5">+91 92368 61784</div>
-                  </div>
-                  <button 
-                    onClick={speakForm} 
-                    className="speaker hover:opacity-85 transition-opacity"
-                    title="सुनें / Listen"
-                  >
-                    <Ic d={I.speaker} size={19} color="var(--accent)" sw={1.8} />
-                  </button>
-                </div>
-              )}
-            </div>
-
           </div>
         </header>
 
-        {/* 2. STATS & TICKER BAND */}
-        <StatsSection 
-          aud={aud} 
-          t={t}
-          language={language} 
-        />
+        {/* 2. WORK SECTION (Image Left, Text Right) */}
+        <section id="work-section" className="hero container border-t border-[rgba(20,16,28,0.08)] pt-16 mt-16" style={{ scrollMarginTop: '80px' }}>
+          <div className="hero-grid">
+            
+            {/* Left Image Column */}
+            <div className="hero-image-col order-2 md:order-1">
+              <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
+                <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
+                  <img 
+                    src="/registration_drive.png" 
+                    className="w-full h-full object-cover" 
+                    alt="Shramik Support Team"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
+                    <span className="text-xs font-bold text-[var(--ink)] bg-white/95 px-3.5 py-2 rounded-full uppercase tracking-wider font-sans border border-slate-200 shadow-sm flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-pulse"></span>
+                      {language === 'hi' ? 'श्रमिक ऑन-साइट सहायता टीम' : 'Shramik On-Site Support Team'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        {/* 3. HOW IT WORKS SECTION */}
+            {/* Right Copy Column */}
+            <div className="hero-copy text-left order-1 md:order-2">
+              <div className="eyebrow">
+                <span className="pulse live-dot" style={{ background: 'var(--saffron)', boxShadow: '0 0 0 4px rgba(255,138,30,0.18)' }}></span>
+                <span>{tWork.eyebrow}</span>
+              </div>
+              <h1 className="h1">
+                {tWork.h1a}<br />
+                <span className="grad">{tWork.h1b}</span>
+              </h1>
+              <p className="sub">{tWork.sub}</p>
+              
+              <div className="hero-actions">
+                <button className="cta font-sans" onClick={() => onNavigate('signup')}>
+                  <span>{tWork.navCta}</span>
+                  <Ic d={I.arrow} size={18} color="#fff" sw={2.6} />
+                </button>
+              </div>
+
+              <div className="pill-row">
+                {tWork.pills.map((p, i) => (
+                  <span key={i} className="pill">
+                    <Ic d={I[p.ic]} size={15} color="var(--green)" sw={2.2} />
+                    <span>{p.text}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* 3. COMBINED STATS */}
+        <StatsSection language={language} />
+
+        {/* 4. COMBINED HOW IT WORKS */}
         <section className="section container">
           <div className="sec-head">
             <div className="eyebrow">{language === 'hi' ? 'कैसे काम करता है' : 'How it works'}</div>
-            <h2>{t.stepsHead}</h2>
-            <p>{t.stepsSub}</p>
+            <h2>
+              {howItWorksTab === 'hire' ? tHire.stepsHead : tWork.stepsHead}
+            </h2>
+            <p>
+              {howItWorksTab === 'hire' ? tHire.stepsSub : tWork.stepsSub}
+            </p>
+            
+            {/* Tabs switcher inside Steps */}
+            <div className="flex justify-center mt-6">
+              <div className="seg">
+                <button 
+                  className={cn("seg-btn cursor-pointer", howItWorksTab === 'hire' && "on")}
+                  onClick={() => setHowItWorksTab('hire')}
+                >
+                  {language === 'hi' ? 'काम कराएँ (नियोक्ता)' : 'Hire Workers'}
+                </button>
+                <button 
+                  className={cn("seg-btn cursor-pointer", howItWorksTab === 'work' && "on")}
+                  onClick={() => setHowItWorksTab('work')}
+                >
+                  {language === 'hi' ? 'काम पाएँ (कामगार)' : 'Find Work'}
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="steps">
-            {t.steps.map((s, i) => (
+          
+          <div className="steps mt-8">
+            {(howItWorksTab === 'hire' ? tHire.steps : tWork.steps).map((s, i) => (
               <div key={i} className="step glass">
                 <span className="num font-display">{i + 1}</span>
                 <div className="ic-box">
@@ -253,40 +267,27 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
           </div>
         </section>
 
-        {/* 4. VALUES GRID */}
+        {/* 5. UNIFIED VALUES PILLARS */}
         <section className="section container" style={{ paddingTop: 0 }}>
           <div className="values">
-            {translations[language].prelaunch[aud === 'hire' ? 'hire' : 'work'].pills.map((v, i) => {
-              // Map values details based on lists defined
-              const listValues = aud === 'hire' ? 
-                [
-                  { ic: 'badge', title: L({ hi: 'सत्यापित कारीगर', en: 'Verified workers' }), desc: L({ hi: 'हर कारीगर आधार-सत्यापित और रेटेड।', en: 'Every worker Aadhaar-verified and rated.' }) },
-                  { ic: 'clock', title: L({ hi: 'माँगते ही पहुँच', en: 'On demand' }), desc: L({ hi: 'कुछ ही घंटों में साइट पर।', en: 'On your site within hours.' }) },
-                  { ic: 'lock', title: L({ hi: 'फिक्स रेट', en: 'Fixed rates' }), desc: L({ hi: 'पारदर्शी दाम, कोई मोलभाव नहीं।', en: 'Transparent pricing, no haggling.' }) },
-                  { ic: 'shield', title: L({ hi: 'सुरक्षित भुगतान', en: 'Safe payments' }), desc: L({ hi: 'काम पूरा होने पर ही पैसा।', en: 'Pay only when the job is done.' }) }
-                ] :
-                [
-                  { ic: 'rupee', title: L({ hi: 'पूरा पैसा', en: 'Full pay' }), desc: L({ hi: 'कोई कटौती नहीं, सीधे खाते में।', en: 'No cuts, straight to your account.' }) },
-                  { ic: 'shield', title: L({ hi: 'सुरक्षित पहचान', en: 'Safe identity' }), desc: L({ hi: 'आधार-सत्यापित, भरोसेमंद समुदाय।', en: 'Aadhaar-verified, trusted community.' }) },
-                  { ic: 'badge', title: L({ hi: 'पक्का काम', en: 'Real work' }), desc: L({ hi: 'सीधे नियोक्ता से, बिना बिचौलिए के।', en: 'Straight from hirers, no middleman.' }) },
-                  { ic: 'check', title: L({ hi: 'मुफ़्त, हमेशा', en: 'Free, always' }), desc: L({ hi: 'जुड़ना और प्रोफ़ाइल मुफ़्त।', en: 'Joining and profile are free.' }) }
-                ];
-
-              const item = listValues[i] || { ic: 'check', title: v.text, desc: '' };
-              return (
-                <div key={i} className="value glass">
-                  <div className="ic-box">
-                    <Ic d={I[item.ic]} size={23} color="var(--green)" sw={2} />
-                  </div>
-                  <h4 className="font-display">{item.title}</h4>
-                  <p className="font-sans">{item.desc}</p>
+            {[
+              { ic: 'badge', title: L({ hi: 'सत्यापित कामगार', en: 'Verified Workers' }), desc: L({ hi: 'हर कामगार आधार-सत्यापित, कुशल और रेटेड होता है।', en: 'Every worker is Aadhaar-verified, skilled, and rated.' }) },
+              { ic: 'rupee', title: L({ hi: 'सीधा भुगतान', en: 'Direct Pay (0% Cut)' }), desc: L({ hi: 'कोई बिचौलिया नहीं, पूरा पैसा सीधे बैंक खाते में।', en: 'No middleman cuts, full pay straight to bank account.' }) },
+              { ic: 'lock', title: L({ hi: 'पारदर्शी दाम', en: 'Transparent Rates' }), desc: L({ hi: 'पहले से तय दाम, काम की जगह पर कोई मोलभाव नहीं।', en: 'Fixed rates up front, no haggling on site.' }) },
+              { ic: 'clock', title: L({ hi: 'त्वरित आगमन', en: 'On-Demand Access' }), desc: L({ hi: 'बुकिंग के कुछ ही घंटों के भीतर कामगार साइट पर।', en: 'Workers arrive at your site within hours of request.' }) }
+            ].map((item, i) => (
+              <div key={i} className="value glass">
+                <div className="ic-box">
+                  <Ic d={I[item.ic]} size={23} color="var(--green)" sw={2} />
                 </div>
-              );
-            })}
+                <h4 className="font-display">{item.title}</h4>
+                <p className="font-sans">{item.desc}</p>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* SHRAMIK GROUND SHOWCASE SECTION */}
+        {/* 6. SHRAMIK GROUND SHOWCASE SECTION */}
         <section className="section container" style={{ paddingTop: '20px' }}>
           <div className="sec-head">
             <div className="eyebrow">{language === 'hi' ? 'जमीनी झलक' : 'Ground Showcase'}</div>
@@ -341,23 +342,42 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
           </div>
         </section>
 
-        {/* 5. FAQ SECTION */}
+        {/* 7. COMBINED FAQ SECTION */}
         <section className="section container">
           <div className="faq-grid">
             <div className="sec-head" style={{ textAlign: 'left', margin: 0, maxWidth: 'none' }}>
               <div className="eyebrow" style={{ justifyContent: 'flex-start' }}>{tCommon.questionsEyebrow}</div>
               <h2>{tCommon.questionsTitle}</h2>
               <p style={{ marginLeft: 0 }}>{tCommon.questionsSub}</p>
+              
+              {/* Tab switcher inside FAQ */}
+              <div className="flex justify-start mt-6">
+                <div className="seg">
+                  <button 
+                    className={cn("seg-btn cursor-pointer", faqTab === 'hire' && "on")}
+                    onClick={() => setFaqTab('hire')}
+                  >
+                    {language === 'hi' ? 'नियोक्ता प्रश्न' : 'Employer FAQs'}
+                  </button>
+                  <button 
+                    className={cn("seg-btn cursor-pointer", faqTab === 'work' && "on")}
+                    onClick={() => setFaqTab('work')}
+                  >
+                    {language === 'hi' ? 'कामगार प्रश्न' : 'Worker FAQs'}
+                  </button>
+                </div>
+              </div>
             </div>
             
             <div className="faq-list glass">
-              {t.faq.map((item, idx) => {
-                const isOpen = openFaq === idx;
+              {(faqTab === 'hire' ? tHire.faq : tWork.faq).map((item, idx) => {
+                const faqKey = `${faqTab}-${idx}`;
+                const isOpen = openFaq === faqKey;
                 return (
                   <div key={idx} className={cn("faq-item", isOpen && "open")}>
                     <button 
                       className="faq-q" 
-                      onClick={() => setOpenFaq(isOpen ? null : idx)}
+                      onClick={() => setOpenFaq(isOpen ? null : faqKey)}
                     >
                       <span className="q font-display font-semibold">{item.q}</span>
                       <span className="chev">
@@ -377,43 +397,8 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
           </div>
         </section>
 
-        {/* 6. BOTTOM CTA BANNER */}
-        <section className="section container">
-          <div className="cta-banner bg-brand-grad text-white">
-            <h2 className="text-white font-display">{t.bannerH}</h2>
-            <p className="text-white/80 font-sans font-medium">{t.bannerP}</p>
-            <div className="actions">
-              <button 
-                onClick={scrollToJoin} 
-                className="cta-ghost border-white/20 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl flex items-center justify-center gap-2 cursor-pointer font-sans"
-              >
-                <span>{t.navCta}</span>
-                <Ic d={I.arrow} size={16} color="#fff" sw={2.4} />
-              </button>
-            </div>
-          </div>
-        </section>
 
-      </div>
 
-      {/* Fixed mobile bottom floating segment switcher */}
-      <div className="fixed bottom-4 left-4 right-4 md:hidden z-50 flex justify-center">
-        <div className="seg w-full max-w-sm glass shadow-lg border border-white/40">
-          <button 
-            className={cn("seg-btn flex-1 justify-center", isHire && "on")} 
-            onClick={() => setAud('hire')}
-          >
-            <Ic d={I.people} size={18} color="currentColor" sw={2} />
-            <span>{tCommon.hireTab}</span>
-          </button>
-          <button 
-            className={cn("seg-btn flex-1 justify-center", !isHire && "on")} 
-            onClick={() => setAud('work')}
-          >
-            <Ic d={I.hardhat} size={18} color="currentColor" sw={2} />
-            <span>{tCommon.workTab}</span>
-          </button>
-        </div>
       </div>
 
       {/* Footer Component */}
@@ -423,206 +408,43 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
   );
 }
 
-// ── SUBCOMPONENT: HEROFORM ──────────────────────────────────────────────────
-function HeroForm({ aud, t, language, tCommon, speakForm }) {
-  const isHire = aud === 'hire';
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [area, setArea] = useState('');
-  const [sel, setSel] = useState(['mistri']);
-  const [done, setDone] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    setDone(false);
-    setErrors({});
-  }, [aud]);
-
-  const toggleSkill = (k) => {
-    setSel((s) => {
-      const exists = s.includes(k);
-      if (!exists && s.length >= 3) {
-        setErrors((e) => ({ ...e, skills: language === 'hi' ? 'अधिकतम ३ हुनर चुन सकते हैं' : 'Select up to 3 skills' }));
-        return s;
-      }
-      const newSel = exists ? s.filter((x) => x !== k) : [...s, k];
-      setErrors((e) => ({ ...e, skills: null }));
-      return newSel;
-    });
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = {};
-
-    if (isHire && !name.trim()) {
-      newErrors.name = language === 'hi' ? 'नाम आवश्यक है' : 'Name is required';
-    }
-    if (!phone || phone.length < 10) {
-      newErrors.phone = language === 'hi' ? 'वैध १०-अंकीय नंबर दर्ज करें' : 'Enter valid 10-digit number';
-    }
-    if (sel.length === 0) {
-      newErrors.skills = language === 'hi' ? 'कम से कम एक हुनर चुनें' : 'Select at least one skill';
-    }
-    if (!area.trim()) {
-      newErrors.area = language === 'hi' ? 'स्थान आवश्यक है' : 'Locality is required';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-    } else {
-      setDone(true);
-    }
-  };
-
-  if (done) {
-    return (
-      <div className="hero-card glass" id="join">
-        <div className="success-state">
-          <div className="ring">
-            <Ic d={I.check} size={34} color="var(--green)" sw={3} />
-          </div>
-          <h3 className="font-display text-2xl font-bold">{t.successTitle}</h3>
-          <p className="font-sans mt-2">{t.successBody}</p>
-          <button 
-            className="edit font-sans font-bold text-sm text-[var(--accent)] mt-6 bg-transparent border-0 cursor-pointer" 
-            onClick={() => setDone(false)}
-          >
-            {t.editBtn}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleFormSubmit} className="hero-card glass flex flex-col gap-4" id="join">
-      <div className="flex items-center justify-between gap-3 border-b border-[rgba(20,16,28,0.06)] pb-4">
-        <div style={{ flex: 1 }}>
-          <div className="card-eyebrow font-sans text-xs font-bold text-[var(--accent)] tracking-wider uppercase">{t.cardEyebrow}</div>
-          <div className="card-title font-display text-xl font-bold mt-1 text-[var(--ink)]">{t.cardTitle}</div>
-        </div>
-        <button 
-          type="button" 
-          onClick={speakForm} 
-          className="speaker hover:opacity-85 transition-all flex items-center justify-center bg-white/80 border border-white"
-          title="सुनें / Listen"
-        >
-          <Ic d={I.speaker} size={19} color="var(--accent)" sw={1.8} />
-        </button>
-      </div>
-
-      {/* Name Input (Hire only) */}
-      {isHire && (
-        <label className="field text-left">
-          <div className="field-label">{t.nameLabel}</div>
-          <div className={cn("field-box", errors.name && "border-red-500")}>
-            <input 
-              value={name} 
-              onChange={(e) => {
-                setName(e.target.value);
-                if (errors.name) setErrors((err) => ({ ...err, name: null }));
-              }} 
-              placeholder={t.namePh} 
-            />
-          </div>
-          {errors.name && <span className="text-xs text-red-500 font-sans mt-1 block">{errors.name}</span>}
-        </label>
-      )}
-
-      {/* Phone Number Input */}
-      <label className="field text-left">
-        <div className="field-label">{language === 'hi' ? 'मोबाइल नंबर' : 'Mobile number'}</div>
-        <div className={cn("field-box", errors.phone && "border-red-500")}>
-          <span className="prefix mr-1">+91</span>
-          <input 
-            type="tel" 
-            inputMode="numeric" 
-            value={phone} 
-            onChange={(e) => {
-              setPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10));
-              if (errors.phone) setErrors((err) => ({ ...err, phone: null }));
-            }} 
-            placeholder="98765 43210" 
-          />
-        </div>
-        {errors.phone && <span className="text-xs text-red-500 font-sans mt-1 block">{errors.phone}</span>}
-      </label>
-
-      {/* Skills selection grid */}
-      <div className="field text-left">
-        <div className="field-label">{t.skillLabel}</div>
-        <div className="skill-grid mt-1">
-          {SKILLS.map((sk) => {
-            const on = sel.includes(sk.key);
-            const skLabel = language === 'hi' ? sk.hi : sk.en;
-            return (
-              <button 
-                type="button" 
-                key={sk.key} 
-                className={cn('skill hover:scale-[1.02] active:scale-[0.98] transition-transform', on ? 'on' : '')} 
-                onClick={() => toggleSkill(sk.key)}
-              >
-                <Ic d={I[sk.ic]} size={21} color="currentColor" sw={2} fill={sk.ic === 'bolt' && on ? 'currentColor' : 'none'} />
-                <span className="lab">{skLabel}</span>
-              </button>
-            );
-          })}
-        </div>
-        {errors.skills && <span className="text-xs text-red-500 font-sans mt-1 block">{errors.skills}</span>}
-      </div>
-
-      {/* Location Area Input */}
-      <label className="field text-left">
-        <div className="field-label">{t.areaLabel}</div>
-        <div className={cn("field-box", errors.area && "border-red-500")}>
-          <input 
-            value={area} 
-            onChange={(e) => {
-              setArea(e.target.value);
-              if (errors.area) setErrors((err) => ({ ...err, area: null }));
-            }} 
-            placeholder={t.areaPh} 
-          />
-        </div>
-        {errors.area && <span className="text-xs text-red-500 font-sans mt-1 block">{errors.area}</span>}
-      </label>
-
-      {/* Submit button */}
-      <button type="submit" className="cta full mt-4">
-        <span>{t.submit}</span> 
-        <Ic d={I.arrow} size={18} color="#fff" sw={2.6} />
-      </button>
-
-      <div className="note flex items-center justify-center gap-1.5 mt-2">
-        <Ic d={I.lock} size={14} color="var(--green)" sw={2.2} />
-        <span>{t.note}</span>
-      </div>
-    </form>
-  );
-}
-
 // ── SUBCOMPONENT: STATSSECTION ──────────────────────────────────────────────
-function StatsSection({ aud, t, language }) {
+function StatsSection({ language }) {
   const [idx, setIdx] = useState(0);
-  const tickerData = aud === 'hire' ? RECENT_HIRERS : RECENT_WORKERS;
+  const tickerData = COMBINED_TICKER_DATA;
 
   useEffect(() => {
     const interval = setInterval(() => {
       setIdx((prev) => (prev + 1) % tickerData.length);
     }, 3200);
     return () => clearInterval(interval);
-  }, [aud, tickerData.length]);
+  }, [tickerData.length]);
 
   const L = (o) => (o ? (language === 'hi' ? o.hi : o.en) : '');
 
   const currentRecord = tickerData[idx];
 
+  const stats = [
+    {
+      big: '12,480',
+      live: true,
+      lab: language === 'hi' ? 'सत्यापित कामगार\nतैयार हैं' : 'verified workers\nready to start'
+    },
+    {
+      big: '~4 hr',
+      lab: language === 'hi' ? 'औसत समय\nआगमन का' : 'average time\nto arrival'
+    },
+    {
+      big: '0%',
+      lab: language === 'hi' ? 'कटौती — पूरा\nपैसा सीधे बैंक में' : 'cut — full pay\nto bank account'
+    }
+  ];
+
   return (
     <section className="stats container">
       <div className="stats-grid">
-        {t.stats.map((s, i) => {
-          const isTickerCell = i === 0; // The first cell holds the dynamic updates ticker
+        {stats.map((s, i) => {
+          const isTickerCell = i === 0;
           return (
             <div key={i} className="stat glass text-left">
               <div className="big font-display font-black text-4xl text-[var(--ink)]">
@@ -646,7 +468,9 @@ function StatsSection({ aud, t, language }) {
                     <span> · </span>
                     <span>{language === 'hi' ? currentRecord.sk_hi : currentRecord.sk_en}</span>
                     <span> </span>
-                    <span className="text-[var(--green)] font-extrabold">{t.tickerVerb}</span>
+                    <span className="text-[var(--green)] font-extrabold">
+                      {language === 'hi' ? currentRecord.verb_hi : currentRecord.verb_en}
+                    </span>
                   </div>
                 </div>
               )}
