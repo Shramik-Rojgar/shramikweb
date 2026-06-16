@@ -56,9 +56,9 @@ export default function Header({
               <span>{language === 'hi' ? 'अ' : 'A'}</span>
               <span className="hidden"><SelectValue /></span>
             </SelectTrigger>
-            <SelectContent className="bg-white border border-[#DDE3EA] rounded-xl shadow-lg z-50">
-              <SelectItem value="hi" className="cursor-pointer font-sans font-semibold text-xs md:text-sm">अ (हिन्दी)</SelectItem>
-              <SelectItem value="en" className="cursor-pointer font-sans font-semibold text-xs md:text-sm">A (English)</SelectItem>
+            <SelectContent className="bg-white border border-[#DDE3EA] rounded-xl shadow-lg z-50 min-w-0 w-14 pt-2 pb-1.5">
+              <SelectItem value="hi" className="cursor-pointer font-sans font-bold text-xs justify-center focus:bg-[var(--page)] focus:text-[var(--ink)] pl-2 pr-2">अ</SelectItem>
+              <SelectItem value="en" className="cursor-pointer font-sans font-bold text-xs justify-center focus:bg-[var(--page)] focus:text-[var(--ink)] pl-2 pr-2">A</SelectItem>
             </SelectContent>
           </Select>
         )}
