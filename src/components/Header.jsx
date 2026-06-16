@@ -26,7 +26,7 @@ export default function Header({
         ? 'bg-[#0E1626] border-slate-800 text-white' 
         : 'bg-[rgba(255,250,239,0.74)] backdrop-blur-md border-[rgba(20,16,28,0.08)] text-[var(--ink)]'
     }`}>
-      <div className="container flex justify-between items-center py-3 md:py-4">
+      <div className="header-container">
         {/* Left section: Logo or Back */}
         <div className="flex items-center gap-3">
           {onBack ? (

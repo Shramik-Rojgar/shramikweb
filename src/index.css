@@ -173,9 +173,8 @@ body {
   -webkit-text-fill-color: transparent !important;
 }
 
-/* ── pre-launch landing page specific styles ───────────────── */
 :root {
-  --maxw: 1180px;
+  --maxw: 1440px;
   --cta-shadow: 0 14px 34px rgba(229, 57, 123, 0.30);
   --card-shadow: 0 12px 34px rgba(122, 59, 255, 0.09);
 }
@@ -189,6 +188,7 @@ body {
 
 .wrap { position: relative; z-index: 1; }
 .container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+.header-container { max-width: var(--maxw); margin: 0 auto; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
 
 .seg {
   display: flex; background: var(--card); border: 1px solid var(--card-border);
@@ -361,6 +361,7 @@ body {
   .cta-banner { padding: 36px 22px; }
   .cta-banner h2 { font-size: 28px; }
   .seg-btn { padding: 8px 12px; gap: 4px; font-size: 13.5px; }
+  .header-container { padding: 12px 18px; }
   
   /* We will handle segmented switch responsive placement via tailwind or inline CSS */
 }
