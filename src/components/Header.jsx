@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Users, HardHat, UserPlus, Info } from 'lucide-react';
 import Logo from './Logo';
+import { cn } from '@/lib/utils';
 import {
   Select,
   SelectContent,
@@ -13,9 +14,10 @@ export default function Header({
   theme = 'light', 
   onNavigate, 
   onBack, 
-  rightAction,
+  activeTab, // 'hire' | 'work' | 'signup' | 'about'
   language = 'hi',
-  onLanguageChange
+  onLanguageChange,
+  setAud
 }) {
   const isDark = theme === 'dark';
   return (
@@ -43,18 +45,58 @@ export default function Header({
         )}
       </div>
 
-      
-      {/* Right section: Actions */}
+      {/* Right section: Switcher & Language Select */}
       <div className="flex items-center gap-3 sm:gap-6">
-        {onBack ? (
+        {!onBack && (
+          <div className="seg text-xs md:text-sm">
+            <button 
+              className={cn("seg-btn cursor-pointer", activeTab === 'hire' && "on")} 
+              onClick={() => {
+                if (setAud) setAud('hire');
+                onNavigate('home');
+              }}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{language === 'hi' ? 'काम कराएँ' : 'Hire'}</span>
+              <span className="sm:hidden">{language === 'hi' ? 'नियोक्ता' : 'Hire'}</span>
+            </button>
+            <button 
+              className={cn("seg-btn cursor-pointer", activeTab === 'work' && "on")} 
+              onClick={() => {
+                if (setAud) setAud('work');
+                onNavigate('home');
+              }}
+            >
+              <HardHat className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{language === 'hi' ? 'काम पाएँ' : 'Work'}</span>
+              <span className="sm:hidden">{language === 'hi' ? 'कामगार' : 'Work'}</span>
+            </button>
+            <button 
+              className={cn("seg-btn cursor-pointer", activeTab === 'signup' && "on")} 
+              onClick={() => onNavigate('signup')}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>{language === 'hi' ? 'साइन अप' : 'Sign Up'}</span>
+            </button>
+            <button 
+              className={cn("seg-btn cursor-pointer", activeTab === 'about' && "on")} 
+              onClick={() => onNavigate('about')}
+            >
+              <Info className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{language === 'hi' ? 'हमारे बारे में' : 'About Us'}</span>
+              <span className="sm:hidden">{language === 'hi' ? 'परिचय' : 'About'}</span>
+            </button>
+          </div>
+        )}
+
+        {onBack && (
           <div className="cursor-pointer" onClick={() => onNavigate('home')}>
             <span className={`text-xl md:text-2xl font-black tracking-tight font-display ${isDark ? 'text-white' : 'text-[var(--ink)]'}`}>
               श्रमिक
             </span>
           </div>
-        ) : (
-          rightAction
         )}
+
         {onLanguageChange && (
           <Select value={language} onValueChange={onLanguageChange}>
             <SelectTrigger className={`h-8 w-14 font-black font-sans cursor-pointer text-xs focus:ring-0 ${

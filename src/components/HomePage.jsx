@@ -58,7 +58,6 @@ const SKILLS = [
   { key: 'consthelper', ic: 'hardhat', hi: 'निर्माण सहायक',  en: 'Site helper' },
   { key: 'labour',      ic: 'people',  hi: 'मजदूर',         en: 'Labourer' },
   { key: 'domestic',    ic: 'home',    hi: 'घरेलू सहायक',    en: 'Domestic help' },
-  { key: 'other',       ic: 'plus',    hi: 'अन्य',          en: 'Other' },
 ];
 
 const RECENT_WORKERS = [
@@ -75,8 +74,7 @@ const RECENT_HIRERS = [
   { hi: 'गोल्फ़ कोर्स रोड', en: 'Golf Course Rd', sk_hi: '4 बेलदार', sk_en: '4 helpers' },
 ];
 
-export default function HomePage({ onNavigate, language = 'hi', onLanguageChange }) {
-  const [aud, setAud] = useState('hire'); // 'hire' | 'work'
+export default function HomePage({ onNavigate, language = 'hi', onLanguageChange, aud = 'hire', setAud }) {
   const [openFaq, setOpenFaq] = useState(null);
 
   const L = (o) => (o ? (language === 'hi' ? o.hi : o.en) : '');
@@ -110,47 +108,6 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
     }
   };
 
-  // Header actions content (Segment switcher + Login/SignUp)
-  const headerActions = (
-    <div className="flex items-center gap-3 sm:gap-6">
-      {/* Desktop segment switcher */}
-      <div className="hidden md:flex seg">
-        <button 
-          className={cn("seg-btn", isHire && "on")} 
-          onClick={() => setAud('hire')}
-        >
-          <Ic d={I.people} size={15} color="currentColor" sw={2.2} />
-          <span>{tCommon.hireTab}</span>
-        </button>
-        <button 
-          className={cn("seg-btn", !isHire && "on")} 
-          onClick={() => setAud('work')}
-        >
-          <Ic d={I.hardhat} size={15} color="currentColor" sw={2.2} />
-          <span>{tCommon.workTab}</span>
-        </button>
-      </div>
-
-      {/* Login & Signup buttons */}
-      <div className="flex items-center gap-2.5 sm:gap-4 font-bold text-xs sm:text-sm">
-        <button 
-          onClick={() => onNavigate('signup', 'login')} 
-          className="text-[var(--ink)] hover:text-[var(--accent)] transition-colors cursor-pointer px-1 py-1 font-sans"
-          id="btn-nav-login"
-        >
-          {language === 'hi' ? 'लॉग इन' : 'Log In'}
-        </button>
-        <button 
-          onClick={() => onNavigate('signup', 'choose')}
-          className="bg-[var(--ink)] hover:opacity-90 text-white py-1.5 px-3.5 sm:py-2 sm:px-5 rounded-full transition-all duration-200 cursor-pointer font-sans shadow-sm"
-          id="btn-nav-signup"
-        >
-          {language === 'hi' ? 'साइन अप' : 'Sign Up'}
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-transparent text-[#14101C] font-sans flex flex-col justify-between overflow-x-hidden">
       
@@ -166,9 +123,10 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
       <Header 
         theme="light" 
         onNavigate={onNavigate} 
-        rightAction={headerActions} 
+        activeTab={aud} 
         language={language} 
         onLanguageChange={onLanguageChange} 
+        setAud={setAud}
       />
 
       {/* Main Container */}
@@ -211,6 +169,24 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
                     <span>{p.text}</span>
                   </span>
                 ))}
+              </div>
+
+              {/* Hero Image / Ground Team Slot */}
+              <div className="hero-image-slot mt-6 rounded-2xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-1.5 shadow-sm max-w-md">
+                <div className="relative aspect-video rounded-xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
+                  <img 
+                    src="/team_with_workers.png" 
+                    className="w-full h-full object-cover" 
+                    alt="Shramik Ground Team"
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
+                    <span className="text-[10px] font-extrabold text-[var(--ink)] bg-white/90 px-3 py-1.5 rounded-full uppercase tracking-wider font-sans border border-slate-200 shadow-sm flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-pulse"></span>
+                      {language === 'hi' ? 'श्रमिक ग्राउंड टीम' : 'Shramik Ground Team'}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -310,6 +286,61 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
           </div>
         </section>
 
+        {/* SHRAMIK GROUND SHOWCASE SECTION */}
+        <section className="section container" style={{ paddingTop: '20px' }}>
+          <div className="sec-head">
+            <div className="eyebrow">{language === 'hi' ? 'जमीनी झलक' : 'Ground Showcase'}</div>
+            <h2>{language === 'hi' ? 'हमारी टीम और कामगारों की झलक' : 'Our Team & Workers in Action'}</h2>
+            <p>{language === 'hi' ? 'भरोसा और गुणवत्ता। हमारे कामगारों और ग्राउंड टीम की कुछ वास्तविक तस्वीरें देखें।' : 'Trust and quality. See real moments of our verified workers and support team.'}</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
+              <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
+                <img 
+                  src="/workers_showcase.png" 
+                  className="w-full h-full object-cover" 
+                  alt="Shramik Workers"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
+                  <span className="text-xs font-bold text-slate-500 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-md font-sans border border-slate-200">
+                    {language === 'hi' ? '१. कार्यस्थल पर कारीगर' : '1. Workers on Site'}
+                  </span>
+                </div>
+              </div>
+              <h4 className="font-display font-bold text-lg text-[var(--ink)] mt-2">
+                {language === 'hi' ? 'हमारे कर्मठ कामगार' : 'Our Skilled Workforce'}
+              </h4>
+              <p className="text-xs text-slate-500 font-medium font-sans">
+                {language === 'hi' ? 'सभी कामगार आधार-सत्यापित, कुशल और पेशेवर हैं।' : 'All workers are Aadhaar-verified, skilled, and professional.'}
+              </p>
+            </div>
+            
+            <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
+              <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
+                <img 
+                  src="/registration_drive.png" 
+                  className="w-full h-full object-cover" 
+                  alt="Registration Drive"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
+                  <span className="text-xs font-bold text-slate-500 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-md font-sans border border-slate-200">
+                    {language === 'hi' ? '२. सत्यापन एवं सहायता' : '2. Verification & Support'}
+                  </span>
+                </div>
+              </div>
+              <h4 className="font-display font-bold text-lg text-[var(--ink)] mt-2">
+                {language === 'hi' ? 'टीम का सहयोग और सत्यापन' : 'On-Site Support & Verification'}
+              </h4>
+              <p className="text-xs text-slate-500 font-medium font-sans">
+                {language === 'hi' ? 'हमारी टीम सीधे कामगारों से मिलकर उनका कौशल जांचती है और सहायता प्रदान करती है।' : 'Our team meets workers directly on-site to verify skills and provide support.'}
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* 5. FAQ SECTION */}
         <section className="section container">
           <div className="faq-grid">
@@ -399,7 +430,6 @@ function HeroForm({ aud, t, language, tCommon, speakForm }) {
   const [phone, setPhone] = useState('');
   const [area, setArea] = useState('');
   const [sel, setSel] = useState(['mistri']);
-  const [other, setOther] = useState('');
   const [done, setDone] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -409,10 +439,16 @@ function HeroForm({ aud, t, language, tCommon, speakForm }) {
   }, [aud]);
 
   const toggleSkill = (k) => {
-    setSel((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]));
-    if (errors.skills) {
+    setSel((s) => {
+      const exists = s.includes(k);
+      if (!exists && s.length >= 3) {
+        setErrors((e) => ({ ...e, skills: language === 'hi' ? 'अधिकतम ३ हुनर चुन सकते हैं' : 'Select up to 3 skills' }));
+        return s;
+      }
+      const newSel = exists ? s.filter((x) => x !== k) : [...s, k];
       setErrors((e) => ({ ...e, skills: null }));
-    }
+      return newSel;
+    });
   };
 
   const handleFormSubmit = (e) => {
@@ -534,16 +570,6 @@ function HeroForm({ aud, t, language, tCommon, speakForm }) {
           })}
         </div>
         {errors.skills && <span className="text-xs text-red-500 font-sans mt-1 block">{errors.skills}</span>}
-
-        {sel.includes('other') && (
-          <div className="field-box mt-3.5">
-            <input 
-              value={other} 
-              onChange={(e) => setOther(e.target.value)} 
-              placeholder={tCommon.otherTradePlaceholder} 
-            />
-          </div>
-        )}
       </div>
 
       {/* Location Area Input */}

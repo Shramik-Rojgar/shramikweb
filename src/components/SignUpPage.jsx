@@ -17,7 +17,7 @@ import HirerSignUpForm from './HirerSignUpForm';
 import LoginForm from './LoginForm';
 import { translations } from '../lib/translations';
 
-export default function SignUpPage({ onNavigate, initialStep = 'choose', language = 'hi', onLanguageChange }) {
+export default function SignUpPage({ onNavigate, initialStep = 'choose', language = 'hi', onLanguageChange, aud, setAud }) {
   const [step, setStep] = useState(initialStep);
 
   // Sync initialStep when navigated from outside
@@ -92,9 +92,10 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
       <Header 
         theme="light" 
         onNavigate={onNavigate} 
-        rightAction={loginAction} 
+        activeTab="signup" 
         language={language} 
         onLanguageChange={onLanguageChange} 
+        setAud={setAud}
       />
       
       <main className="max-w-6xl mx-auto px-6 py-12 md:py-16 text-center flex-grow flex flex-col justify-center w-full z-10">
@@ -110,7 +111,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
           {/* Laborer Card */}
           <div className="glass-card rounded-3xl p-8 md:p-10 flex flex-col justify-between transition-all duration-300">
             <div className="mb-8">
-              <div className="w-14 h-14 rounded-2xl bg-[var(--ink)] flex items-center justify-center text-white mb-8 shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-brand-grad flex items-center justify-center text-white mb-8 shadow-sm">
                 <HardHat className="w-7 h-7 text-white" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-[var(--ink)] mb-4 font-display">
@@ -136,7 +137,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
             </div>
             <button 
               onClick={() => setStep('laborer-signup')}
-              className="w-full bg-[var(--ink)] hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
+              className="w-full bg-brand-grad hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
               id="btn-laborer-continue"
             >
               <span>{t.continueBtn}</span>
@@ -147,7 +148,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
           {/* Hirer Card */}
           <div className="glass-card rounded-3xl p-8 md:p-10 flex flex-col justify-between transition-all duration-300">
             <div className="mb-8">
-              <div className="w-14 h-14 rounded-2xl bg-[var(--accent)] flex items-center justify-center text-white mb-8 shadow-sm">
+              <div className="w-14 h-14 rounded-2xl bg-brand-grad flex items-center justify-center text-white mb-8 shadow-sm">
                 <UserCheck className="w-7 h-7 text-white" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-[var(--ink)] mb-4 font-display">
@@ -173,7 +174,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
             </div>
             <button 
               onClick={() => setStep('hirer-signup')}
-              className="w-full bg-[var(--ink)] hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
+              className="w-full bg-brand-grad hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
               id="btn-hirer-continue"
             >
               <span>{t.continueBtn}</span>

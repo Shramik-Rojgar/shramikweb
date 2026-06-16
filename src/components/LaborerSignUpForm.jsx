@@ -57,7 +57,6 @@ const SKILLS = [
   { key: 'consthelper', ic: 'hardhat', hi: 'निर्माण सहायक',  en: 'Site helper' },
   { key: 'labour',      ic: 'people',  hi: 'मजदूर',         en: 'Labourer' },
   { key: 'domestic',    ic: 'home',    hi: 'घरेलू सहायक',    en: 'Domestic help' },
-  { key: 'other',       ic: 'plus',    hi: 'अन्य',          en: 'Other' },
 ];
 
 const experienceOptions = [
@@ -107,13 +106,16 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
 
   const toggleSkill = (skillId) => {
     setFormData(prev => {
-      const skills = prev.skills.includes(skillId)
+      const exists = prev.skills.includes(skillId);
+      if (!exists && prev.skills.length >= 3) {
+        setErrors(err => ({ ...err, skills: language === 'hi' ? 'आप अधिकतम ३ हुनर ही चुन सकते हैं' : 'You can select up to 3 skills' }));
+        return prev;
+      }
+      const skills = exists
         ? prev.skills.filter(id => id !== skillId)
         : [...prev.skills, skillId];
       
-      if (errors.skills && skills.length > 0) {
-        setErrors(err => ({ ...err, skills: '' }));
-      }
+      setErrors(err => ({ ...err, skills: '' }));
       return { ...prev, skills };
     });
   };
