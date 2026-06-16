@@ -47,17 +47,17 @@ const I = {
 };
 
 const SKILLS = [
-  { key: 'mistri',      ic: 'brick',   hi: 'मिस्त्री',       en: 'Mason' },
-  { key: 'carpenter',   ic: 'hammer',  hi: 'बढ़ई',          en: 'Carpenter' },
-  { key: 'painter',     ic: 'roller',  hi: 'पेंटर',         en: 'Painter' },
-  { key: 'welder',      ic: 'welder',  hi: 'वेल्डर',        en: 'Welder' },
-  { key: 'plumber',     ic: 'droplet', hi: 'नलसाज',         en: 'Plumber' },
-  { key: 'electrician', ic: 'bolt',    hi: 'बिजली मिस्त्री', en: 'Electrician' },
-  { key: 'rebar',       ic: 'rebar',   hi: 'सरिया',         en: 'Bar bender' },
-  { key: 'tiler',       ic: 'tile',    hi: 'टाइल',          en: 'Tiler' },
-  { key: 'consthelper', ic: 'hardhat', hi: 'निर्माण सहायक',  en: 'Site helper' },
-  { key: 'labour',      ic: 'people',  hi: 'मजदूर',         en: 'Labourer' },
-  { key: 'domestic',    ic: 'home',    hi: 'घरेलू सहायक',    en: 'Domestic help' },
+  { key: 'mistri', ic: 'brick', hi: 'मिस्त्री', en: 'Mason' },
+  { key: 'carpenter', ic: 'hammer', hi: 'बढ़ई', en: 'Carpenter' },
+  { key: 'painter', ic: 'roller', hi: 'पेंटर', en: 'Painter' },
+  { key: 'welder', ic: 'welder', hi: 'वेल्डर', en: 'Welder' },
+  { key: 'plumber', ic: 'droplet', hi: 'नलसाज', en: 'Plumber' },
+  { key: 'electrician', ic: 'bolt', hi: 'बिजली मिस्त्री', en: 'Electrician' },
+  { key: 'rebar', ic: 'rebar', hi: 'सरिया', en: 'Bar bender' },
+  { key: 'tiler', ic: 'tile', hi: 'टाइल', en: 'Tiler' },
+  { key: 'consthelper', ic: 'hardhat', hi: 'निर्माण सहायक', en: 'Site helper' },
+  { key: 'labour', ic: 'people', hi: 'मजदूर', en: 'Labourer' },
+  { key: 'domestic', ic: 'home', hi: 'घरेलू सहायक', en: 'Domestic help' },
 ];
 
 const COMBINED_TICKER_DATA = [
@@ -77,7 +77,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
   const [faqTab, setFaqTab] = useState('hire'); // 'hire' | 'work'
 
   const L = (o) => (o ? (language === 'hi' ? o.hi : o.en) : '');
-  
+
   const tHire = translations[language].prelaunch.hire;
   const tWork = translations[language].prelaunch.work;
   const tCommon = translations[language].prelaunch.common;
@@ -86,7 +86,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
 
   return (
     <div className="min-h-screen bg-transparent text-[#14101C] font-sans flex flex-col justify-between overflow-x-hidden">
-      
+
       {/* Ambient background glowing blobs */}
       <div className="bg-blobs">
         <span className="blob b1"></span>
@@ -96,22 +96,22 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
       </div>
 
       {/* Navigation Header */}
-      <Header 
-        theme="light" 
-        onNavigate={onNavigate} 
-        activeTab="home" 
-        language={language} 
-        onLanguageChange={onLanguageChange} 
+      <Header
+        theme="light"
+        onNavigate={onNavigate}
+        activeTab="home"
+        language={language}
+        onLanguageChange={onLanguageChange}
         setAud={setAud}
       />
 
       {/* Main Container */}
       <div className="wrap flex-grow">
-        
+
         {/* 1. HIRE SECTION (Text Left, Image Right) */}
         <header id="hire-section" className="hero container" style={{ scrollMarginTop: '80px' }}>
           <div className="hero-grid">
-            
+
             {/* Left Copy Column */}
             <div className="hero-copy text-left">
               <div className="eyebrow">
@@ -123,7 +123,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
                 <span className="grad">{tHire.h1b}</span>
               </h1>
               <p className="sub">{tHire.sub}</p>
-              
+
               <div className="hero-actions">
                 <button className="cta font-sans" onClick={() => onNavigate('signup')}>
                   <span>{tHire.navCta}</span>
@@ -145,9 +145,9 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="hero-image-col">
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
-                  <img 
-                    src="/IMG_0661.HEIC" 
-                    className="w-full h-full object-cover" 
+                  <img
+                    src="/IMG_0661.HEIC"
+                    className="w-full h-full object-cover"
                     alt="Shramik Ground Team"
                   />
                 </div>
@@ -160,14 +160,14 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
         {/* 2. WORK SECTION (Image Left, Text Right) */}
         <section id="work-section" className="hero container border-t border-[rgba(20,16,28,0.08)] pt-16 mt-16" style={{ scrollMarginTop: '80px' }}>
           <div className="hero-grid">
-            
+
             {/* Left Image Column */}
             <div className="hero-image-col order-2 md:order-1">
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
-                  <img 
-                    src="/IMG_3850.JPG" 
-                    className="w-full h-full object-cover" 
+                  <img
+                    src="/IMG_3850.JPG"
+                    className="w-full h-full object-cover"
                     alt="Shramik Support Team"
                   />
                 </div>
@@ -185,7 +185,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
                 <span className="grad">{tWork.h1b}</span>
               </h1>
               <p className="sub">{tWork.sub}</p>
-              
+
               <div className="hero-actions">
                 <button className="cta font-sans" onClick={() => onNavigate('signup')}>
                   <span>{tWork.navCta}</span>
@@ -219,17 +219,17 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <p>
               {howItWorksTab === 'hire' ? tHire.stepsSub : tWork.stepsSub}
             </p>
-            
+
             {/* Tabs switcher inside Steps */}
             <div className="flex justify-center mt-6">
               <div className="seg">
-                <button 
+                <button
                   className={cn("seg-btn cursor-pointer", howItWorksTab === 'hire' && "on")}
                   onClick={() => setHowItWorksTab('hire')}
                 >
                   {language === 'hi' ? 'काम कराएँ (नियोक्ता)' : 'Hire Workers'}
                 </button>
-                <button 
+                <button
                   className={cn("seg-btn cursor-pointer", howItWorksTab === 'work' && "on")}
                   onClick={() => setHowItWorksTab('work')}
                 >
@@ -238,7 +238,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               </div>
             </div>
           </div>
-          
+
           <div className="steps mt-8">
             {(howItWorksTab === 'hire' ? tHire.steps : tWork.steps).map((s, i) => (
               <div key={i} className="step glass">
@@ -280,23 +280,23 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <h2>{language === 'hi' ? 'हमारी टीम और कामगारों की झलक' : 'Our Team & Workers in Action'}</h2>
             <p>{language === 'hi' ? 'भरोसा और गुणवत्ता। हमारे कामगारों और ग्राउंड टीम की कुछ वास्तविक तस्वीरें देखें।' : 'Trust and quality. See real moments of our verified workers and support team.'}</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
-                <img 
-                  src="/IMG_0952.HEIC" 
-                  className="w-full h-full object-cover" 
+                <img
+                  src="/IMG_0952.HEIC"
+                  className="w-full h-full object-cover"
                   alt="Shramik Workers"
                 />
               </div>
             </div>
-            
+
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
-                <img 
-                  src="/IMG_0842.HEIC" 
-                  className="w-full h-full object-cover" 
+                <img
+                  src="/IMG_0842.HEIC"
+                  className="w-full h-full object-contain"
                   alt="Registration Drive"
                 />
               </div>
@@ -311,17 +311,17 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="eyebrow" style={{ justifyContent: 'flex-start' }}>{tCommon.questionsEyebrow}</div>
               <h2>{tCommon.questionsTitle}</h2>
               <p style={{ marginLeft: 0 }}>{tCommon.questionsSub}</p>
-              
+
               {/* Tab switcher inside FAQ */}
               <div className="flex justify-start mt-6">
                 <div className="seg">
-                  <button 
+                  <button
                     className={cn("seg-btn cursor-pointer", faqTab === 'hire' && "on")}
                     onClick={() => setFaqTab('hire')}
                   >
                     {language === 'hi' ? 'नियोक्ता प्रश्न' : 'Employer FAQs'}
                   </button>
-                  <button 
+                  <button
                     className={cn("seg-btn cursor-pointer", faqTab === 'work' && "on")}
                     onClick={() => setFaqTab('work')}
                   >
@@ -330,15 +330,15 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
                 </div>
               </div>
             </div>
-            
+
             <div className="faq-list glass">
               {(faqTab === 'hire' ? tHire.faq : tWork.faq).map((item, idx) => {
                 const faqKey = `${faqTab}-${idx}`;
                 const isOpen = openFaq === faqKey;
                 return (
                   <div key={idx} className={cn("faq-item", isOpen && "open")}>
-                    <button 
-                      className="faq-q" 
+                    <button
+                      className="faq-q"
                       onClick={() => setOpenFaq(isOpen ? null : faqKey)}
                     >
                       <span className="q font-display font-semibold">{item.q}</span>
@@ -346,8 +346,8 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
                         <Ic d={I.chevron} size={15} color={isOpen ? '#fff' : 'var(--mut)'} sw={2.4} />
                       </span>
                     </button>
-                    <div 
-                      className="faq-a transition-all duration-350 ease-in-out" 
+                    <div
+                      className="faq-a transition-all duration-350 ease-in-out"
                       style={{ maxHeight: isOpen ? '220px' : '0px' }}
                     >
                       <div className="faq-a-inner font-sans">{item.a}</div>

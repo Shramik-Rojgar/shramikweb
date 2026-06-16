@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { 
-  HardHat, 
-  Check, 
-  Wallet, 
-  ShieldCheck, 
-  Lock, 
-  Clock, 
-  ArrowRight, 
-  Camera, 
-  MapPin, 
-  Plus, 
-  Minus, 
+import {
+  HardHat,
+  Check,
+  Wallet,
+  ShieldCheck,
+  Lock,
+  Clock,
+  ArrowRight,
+  Camera,
+  MapPin,
+  Plus,
+  Minus,
   Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -46,29 +46,32 @@ function Ic({ d, size = 22, color = 'currentColor', sw = 2, fill = 'none' }) {
 }
 
 const SKILLS = [
-  { key: 'mistri',      ic: 'brick',   hi: 'मिस्त्री',       en: 'Mason' },
-  { key: 'carpenter',   ic: 'hammer',  hi: 'बढ़ई',          en: 'Carpenter' },
-  { key: 'painter',     ic: 'roller',  hi: 'पेंटर',         en: 'Painter' },
-  { key: 'welder',      ic: 'welder',  hi: 'वेल्डर',        en: 'Welder' },
-  { key: 'plumber',     ic: 'droplet', hi: 'नलसाज',         en: 'Plumber' },
-  { key: 'electrician', ic: 'bolt',    hi: 'बिजली मिस्त्री', en: 'Electrician' },
-  { key: 'rebar',       ic: 'rebar',   hi: 'सरिया',         en: 'Bar bender' },
-  { key: 'tiler',       ic: 'tile',    hi: 'टाइल',          en: 'Tiler' },
-  { key: 'consthelper', ic: 'hardhat', hi: 'निर्माण सहायक',  en: 'Site helper' },
-  { key: 'labour',      ic: 'people',  hi: 'मजदूर',         en: 'Labourer' },
-  { key: 'domestic',    ic: 'home',    hi: 'घरेलू सहायक',    en: 'Domestic help' },
+  { key: 'mistri', ic: 'brick', hi: 'मिस्त्री', en: 'Mason' },
+  { key: 'carpenter', ic: 'hammer', hi: 'बढ़ई', en: 'Carpenter' },
+  { key: 'painter', ic: 'roller', hi: 'पेंटर', en: 'Painter' },
+  { key: 'welder', ic: 'welder', hi: 'वेल्डर', en: 'Welder' },
+  { key: 'plumber', ic: 'droplet', hi: 'नलसाज', en: 'Plumber' },
+  { key: 'electrician', ic: 'bolt', hi: 'बिजली मिस्त्री', en: 'Electrician' },
+  { key: 'rebar', ic: 'rebar', hi: 'सरिया', en: 'Bar bender' },
+  { key: 'tiler', ic: 'tile', hi: 'टाइल', en: 'Tiler' },
+  { key: 'consthelper', ic: 'hardhat', hi: 'निर्माण सहायक', en: 'Site helper' },
+  { key: 'labour', ic: 'people', hi: 'मजदूर', en: 'Labourer' },
+  { key: 'domestic', ic: 'home', hi: 'घरेलू सहायक', en: 'Domestic help' },
 ];
 
 const experienceOptions = [
-  { id: '0-1', label: '0-1 year (Beldaar)' },
-  { id: '1-3', label: '1-3 years (Helper)' },
-  { id: '3-5', label: '3-5 years (Mistri)' },
-  { id: '5+', label: '5+ years (Thekedar)' }
+  { id: '0-1', label: '0-1 year' },
+  { id: '1-3', label: '1-3 years' },
+  { id: '3-5', label: '3-5 years' },
+  { id: '5+', label: '5+ years' }
 ];
 
 export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi', onLanguageChange }) {
   const [formData, setFormData] = useState({
     name: '',
+    phone: '',
+    dob: '',
+    gender: '',
     skills: [],
     experience: '',
     dailyRate: 600,
@@ -114,7 +117,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       const skills = exists
         ? prev.skills.filter(id => id !== skillId)
         : [...prev.skills, skillId];
-      
+
       setErrors(err => ({ ...err, skills: '' }));
       return { ...prev, skills };
     });
@@ -163,6 +166,17 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     if (!formData.name.trim()) {
       newErrors.name = language === 'hi' ? 'पूरा नाम आवश्यक है' : 'Full name is required';
     }
+    if (!formData.phone.trim()) {
+      newErrors.phone = language === 'hi' ? 'मोबाइल नंबर आवश्यक है' : 'Mobile number is required';
+    } else if (!/^\d{10}$/.test(formData.phone)) {
+      newErrors.phone = language === 'hi' ? 'कृपया सही १०-अंकों का मोबाइल नंबर दर्ज करें' : 'Please enter a valid 10-digit mobile number';
+    }
+    if (!formData.dob) {
+      newErrors.dob = language === 'hi' ? 'जन्म तिथि आवश्यक है' : 'Date of birth is required';
+    }
+    if (!formData.gender) {
+      newErrors.gender = language === 'hi' ? 'लिंग का चयन करना आवश्यक है' : 'Gender selection is required';
+    }
     if (!photoPreview) {
       newErrors.photo = language === 'hi' ? 'प्रोफ़ाइल फ़ोटो आवश्यक है' : 'Profile photo is required';
     }
@@ -194,10 +208,10 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
 
   return (
     <div className="min-h-screen bg-transparent text-[#1C2733] font-sans flex flex-col justify-between">
-      <Header 
-        theme="light" 
-        onNavigate={onNavigate} 
-        onBack={onBack} 
+      <Header
+        theme="light"
+        onNavigate={onNavigate}
+        onBack={onBack}
         language={language}
         onLanguageChange={onLanguageChange}
       />
@@ -217,7 +231,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
             </div>
           ) : (
             <form onSubmit={handleLaborerSubmit} className="flex flex-col gap-8">
-              
+
               {/* Field 1: Full Name */}
               <div className="flex flex-col gap-2">
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.fullName}</Label>
@@ -232,6 +246,54 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                 {errors.name && <span className="text-xs text-dispute-red">{errors.name}</span>}
               </div>
 
+              {/* Mobile Number Field */}
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.phone}</Label>
+                <Input
+                  type="tel"
+                  name="phone"
+                  placeholder={language === 'hi' ? 'अपना १०-अंकों का मोबाइल नंबर दर्ज करें' : 'Enter your 10-digit mobile number'}
+                  value={formData.phone}
+                  onChange={handleChange}
+                  maxLength={10}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.phone ? 'border-dispute-red' : ''}`}
+                />
+                {errors.phone && <span className="text-xs text-dispute-red">{errors.phone}</span>}
+              </div>
+
+              {/* DOB & Gender Fields in a responsive row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Date of Birth */}
+                <div className="flex flex-col gap-2">
+                  <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.dob}</Label>
+                  <Input
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleChange}
+                    className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.dob ? 'border-dispute-red' : ''}`}
+                  />
+                  {errors.dob && <span className="text-xs text-dispute-red">{errors.dob}</span>}
+                </div>
+
+                {/* Gender */}
+                <div className="flex flex-col gap-2">
+                  <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.gender}</Label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none bg-white/85 text-sm font-semibold cursor-pointer ${errors.gender ? 'border-dispute-red' : ''}`}
+                  >
+                    <option value="">{language === 'hi' ? 'लिंग चुनें' : 'Select Gender'}</option>
+                    <option value="male">{t.genderMale}</option>
+                    <option value="female">{t.genderFemale}</option>
+                    <option value="other">{t.genderOther}</option>
+                  </select>
+                  {errors.gender && <span className="text-xs text-dispute-red">{errors.gender}</span>}
+                </div>
+              </div>
+
               {/* Field 2: Profile Photo (Camera/Upload Mock) */}
               <div className="flex flex-col gap-2">
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.profilePhoto}</Label>
@@ -244,14 +306,14 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                     )}
                   </div>
                   <div>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      id="profile-photo-input" 
-                      className="hidden" 
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="profile-photo-input"
+                      className="hidden"
                       onChange={handlePhotoChange}
                     />
-                    <label 
+                    <label
                       htmlFor="profile-photo-input"
                       className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300/60 cursor-pointer transition-all duration-200 text-xs md:text-sm"
                     >
@@ -268,16 +330,16 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
               <div className="flex flex-col gap-2">
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.primarySkills}</Label>
                 <p className="text-[10px] text-slate-400 mb-2 font-semibold">{t.skillsSubtext}</p>
-                
+
                 <div className="skill-grid mt-1">
                   {SKILLS.map((sk) => {
                     const on = formData.skills.includes(sk.key);
                     const skLabel = language === 'hi' ? sk.hi : sk.en;
                     return (
-                      <button 
-                        type="button" 
-                        key={sk.key} 
-                        className={cn('skill hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer', on ? 'on' : '')} 
+                      <button
+                        type="button"
+                        key={sk.key}
+                        className={cn('skill hover:scale-[1.02] active:scale-[0.98] transition-transform cursor-pointer', on ? 'on' : '')}
                         onClick={() => toggleSkill(sk.key)}
                       >
                         <Ic d={I[sk.ic]} size={21} color="currentColor" sw={2} fill={sk.ic === 'bolt' && on ? 'currentColor' : 'none'} />
@@ -307,11 +369,10 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                             setErrors(err => ({ ...err, experience: '' }));
                           }
                         }}
-                        className={`py-2 px-4 rounded-xl border font-semibold text-xs md:text-sm transition-all duration-150 cursor-pointer ${
-                          isSelected 
-                            ? 'bg-[#7A3BFF] border-transparent text-white shadow-sm' 
-                            : 'glass-chip hover:border-slate-350 text-slate-700'
-                        }`}
+                        className={`py-2 px-4 rounded-xl border font-semibold text-xs md:text-sm transition-all duration-150 cursor-pointer ${isSelected
+                          ? 'bg-[#7A3BFF] border-transparent text-white shadow-sm'
+                          : 'glass-chip hover:border-slate-350 text-slate-700'
+                          }`}
                       >
                         <span>{expLabel}</span>
                       </button>
@@ -325,34 +386,34 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
               <div className="flex flex-col gap-2">
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.expectedWage}</Label>
                 <p className="text-[10px] text-slate-400 font-semibold mb-2">{t.wageSubtext}</p>
-                
-                <div className="flex items-center gap-3 w-fit bg-surface-gray-2/50 border border-slate-200 p-1.5 rounded-2xl">
-                    <Button
-                      type="button"
-                      onClick={() => adjustRate(-50)}
-                      variant="outline"
-                      size="icon"
-                      className="w-10 h-10 rounded-xl bg-white hover:bg-slate-100 flex items-center justify-center text-slate-700 border border-slate-200 cursor-pointer transition-colors"
-                      aria-label="Decrease daily rate"
-                    >
-                      <Minus className="w-4 h-4 stroke-[3]" />
-                    </Button>
-                    
-                    <div className="min-w-28 text-center">
-                      <span className="text-2xl font-black text-ink font-display">₹{formData.dailyRate}</span>
-                      <span className="block text-[9px] text-slate-400 font-semibold">{t.wagePerDay}</span>
-                    </div>
 
-                    <Button
-                       type="button"
-                       onClick={() => adjustRate(50)}
-                       variant="outline"
-                       size="icon"
-                       className="w-10 h-10 rounded-xl bg-white hover:bg-slate-100 flex items-center justify-center text-slate-700 border border-slate-200 cursor-pointer transition-colors"
-                       aria-label="Increase daily rate"
-                    >
-                      <Plus className="w-4 h-4 stroke-[3]" />
-                    </Button>
+                <div className="flex items-center gap-3 w-fit bg-surface-gray-2/50 border border-slate-200 p-1.5 rounded-2xl">
+                  <Button
+                    type="button"
+                    onClick={() => adjustRate(-50)}
+                    variant="outline"
+                    size="icon"
+                    className="w-10 h-10 rounded-xl bg-white hover:bg-slate-100 flex items-center justify-center text-slate-700 border border-slate-200 cursor-pointer transition-colors"
+                    aria-label="Decrease daily rate"
+                  >
+                    <Minus className="w-4 h-4 stroke-[3]" />
+                  </Button>
+
+                  <div className="min-w-28 text-center">
+                    <span className="text-2xl font-black text-ink font-display">₹{formData.dailyRate}</span>
+                    <span className="block text-[9px] text-slate-400 font-semibold">{t.wagePerDay}</span>
+                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={() => adjustRate(50)}
+                    variant="outline"
+                    size="icon"
+                    className="w-10 h-10 rounded-xl bg-white hover:bg-slate-100 flex items-center justify-center text-slate-700 border border-slate-200 cursor-pointer transition-colors"
+                    aria-label="Increase daily rate"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3]" />
+                  </Button>
                 </div>
               </div>
 
@@ -371,7 +432,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                     />
                     <MapPin className="absolute right-3 top-3.5 w-5 h-5 text-slate-400" />
                   </div>
-                  
+
                   <Button
                     type="button"
                     onClick={detectLocation}
