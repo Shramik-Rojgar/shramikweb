@@ -98,6 +98,108 @@ export const translations = {
       agreeTerms: 'I agree to the Terms of Service & Privacy Policy of Shramik.',
       submitBtn: 'Create Employer Profile',
       submittingBtn: 'Creating Profile...'
+    },
+    prelaunch: {
+      hire: {
+        navCta: 'Get early access',
+        eyebrow: 'Coming soon · Gurugram first',
+        h1a: 'Right hands.',
+        h1b: 'One place.',
+        sub: 'Certified, verified workers, on demand, zero hassle.',
+        cardEyebrow: 'Early-access list',
+        cardTitle: 'Get workers from day one',
+        nameLabel: 'Your name / company',
+        namePh: 'e.g. Sharma Construction',
+        skillLabel: 'Which workers do you need?',
+        areaLabel: 'Site locality',
+        areaPh: 'e.g. Sector 56',
+        submit: 'Get early access',
+        note: "We'll notify you first at launch",
+        successTitle: "You're on the list!",
+        successBody: "We'll call you at launch and hand you priority access.",
+        editBtn: 'Edit details',
+        pills: [
+          { ic: 'badge', text: 'Aadhaar-verified' },
+          { ic: 'clock', text: '~4 hr arrival' },
+          { ic: 'lock', text: 'Fixed rates' }
+        ],
+        stats: [
+          { big: '12,480', live: true, lab: 'verified workers\nready to start' },
+          { big: '~4 hr', lab: 'average time\nto arrival' },
+          { big: '100%', lab: 'fixed rates — no\nhaggling on site' }
+        ],
+        tickerVerb: 'requested',
+        stepsHead: 'Hiring, minus the hassle',
+        stepsSub: 'Post a job, pick verified hands, get it done.',
+        steps: [
+          { ic: 'search', title: 'Post the job', desc: 'Pick skill, place and time — in a minute.' },
+          { ic: 'badge', title: 'Pick verified hands', desc: 'See Aadhaar-verified, rated workers near you.' },
+          { ic: 'check', title: 'Done & paid safely', desc: 'Payment releases only when the job is done.' }
+        ],
+        faq: [
+          { q: 'How are workers verified?', a: 'Every worker is Aadhaar-verified, and you can see ratings from their past jobs.' },
+          { q: 'Who sets the rate?', a: 'Rates are fixed and transparent up front — no haggling on site.' },
+          { q: 'How is payment protected?', a: 'Funds are held safely and released to the worker only once the job is complete.' },
+          { q: 'When does it launch?', a: 'Soon, in Gurugram. Early sign-ups get priority access.' }
+        ],
+        bannerH: 'The right hands, from day one',
+        bannerP: 'Join the early-access list — be the first we notify at launch.'
+      },
+      work: {
+        navCta: 'Join now',
+        eyebrow: 'Coming soon · Gurugram first',
+        h1a: 'Your skill. Your money.',
+        h1b: 'Your identity.',
+        sub: 'No thekedar. No cut. Paid daily.',
+        cardEyebrow: 'Join in 30 seconds',
+        cardTitle: 'Put your name down',
+        phoneLabel: 'Mobile number',
+        skillLabel: 'Your skill?',
+        areaLabel: 'Area / sector',
+        areaPh: 'e.g. Sector 56',
+        submit: 'Join now',
+        note: 'Just number + skill now — the rest later',
+        successTitle: "You're on the list!",
+        successBody: "We'll SMS you at launch. Finish the rest — photo, Aadhaar, experience — then.",
+        editBtn: 'Edit details',
+        pills: [
+          { ic: 'rupee', text: 'Full pay, no cuts' },
+          { ic: 'shield', text: 'Verified & safe' },
+          { ic: 'check', text: 'Free to join' }
+        ],
+        stats: [
+          { big: '12,480', live: true, lab: 'workers already\nready' },
+          { big: '0%', lab: 'cut — full pay\nto your account' },
+          { big: 'Daily', lab: 'payouts — money\non the work day' }
+        ],
+        tickerVerb: 'just joined',
+        stepsHead: 'Three easy steps',
+        stepsSub: 'Join, get verified, get work and get paid.',
+        steps: [
+          { ic: 'person', title: 'Join', desc: 'Number and skill — that’s all.' },
+          { ic: 'shield', title: 'Get verified', desc: 'Aadhaar-verified at launch, once.' },
+          { ic: 'rupee', title: 'Get work & paid', desc: 'Full pay to your account — no cuts.' }
+        ],
+        faq: [
+          { q: 'Is joining free?', a: 'Yes. Joining and building your profile is always free.' },
+          { q: 'Will my money be safe?', a: 'Your full wage is held safely and paid straight to your bank account — no middleman can take a cut.' },
+          { q: 'When does it launch?', a: 'Soon, in Gurugram. Workers who join now will be ready from day one.' }
+        ],
+        bannerH: 'Be ready for day one',
+        bannerP: "Put your name down now — don't miss the first jobs."
+      },
+      common: {
+        hireTab: 'Hire',
+        workTab: 'Work',
+        lookingForWork: 'Looking for work?',
+        needWorkers: 'Need workers?',
+        cantFillPhone: "Can't fill this on your phone?",
+        missedCallInstructions: 'Give a missed call — we call you back',
+        questionsEyebrow: 'Questions',
+        questionsTitle: 'Frequently asked',
+        questionsSub: 'More questions? Give a missed call and we’ll ring you back.',
+        otherTradePlaceholder: 'Which trade? Type it here'
+      }
     }
   },
   hi: {
@@ -199,6 +301,108 @@ export const translations = {
       agreeTerms: 'मैं श्रमिक की सेवा शर्तों और गोपनीयता नीति से सहमत हूँ।',
       submitBtn: 'नियोक्ता प्रोफ़ाइल बनाएं',
       submittingBtn: 'प्रोफ़ाइल बनाई जा रही है...'
+    },
+    prelaunch: {
+      hire: {
+        navCta: 'जल्दी पहुँच पाएँ',
+        eyebrow: 'जल्द आ रहा है · गुरुग्राम में पहले',
+        h1a: 'सही हाथ।',
+        h1b: 'एक जगह।',
+        sub: 'सत्यापित, प्रमाणित कारीगर — माँगते ही, बिना झंझट।',
+        cardEyebrow: 'अर्ली एक्सेस लिस्ट',
+        cardTitle: 'पहले दिन से कारीगर पाएँ',
+        nameLabel: 'आपका / कंपनी का नाम',
+        namePh: 'जैसे: शर्मा कंस्ट्रक्शन',
+        skillLabel: 'किन कारीगरों की ज़रूरत?',
+        areaLabel: 'साइट का इलाका',
+        areaPh: 'जैसे: सेक्टर 56',
+        submit: 'जल्दी पहुँच पाएँ',
+        note: 'लॉन्च पर सबसे पहले आपको बताएँगे',
+        successTitle: 'आप लिस्ट में हैं!',
+        successBody: 'लॉन्च पर हम आपको कॉल करेंगे और प्राथमिकता पहुँच देंगे।',
+        editBtn: 'जानकारी बदलें',
+        pills: [
+          { ic: 'badge', text: 'आधार-सत्यापित' },
+          { ic: 'clock', text: '~4 घंटे में पहुँच' },
+          { ic: 'lock', text: 'फिक्स रेट' }
+        ],
+        stats: [
+          { big: '12,480', live: true, lab: 'सत्यापित कारीगर\nतैयार हैं' },
+          { big: '~4 hr', lab: 'औसत पहुँचने\nका समय' },
+          { big: '100%', lab: 'फिक्स रेट — साइट पर\nकोई मोलभाव नहीं' }
+        ],
+        tickerVerb: 'ने माँगा',
+        stepsHead: 'काम पर रखना, बिना झंझट',
+        stepsSub: 'पोस्ट करें, सत्यापित कारीगर चुनें, काम पूरा कराएँ।',
+        steps: [
+          { ic: 'search', title: 'काम बताएँ', desc: 'हुनर, जगह और समय चुनें — एक मिनट में।' },
+          { ic: 'badge', title: 'सत्यापित कारीगर चुनें', desc: 'आधार-सत्यापित, रेटिंग वाले कारीगर देखें।' },
+          { ic: 'check', title: 'काम पूरा, पैसा सुरक्षित', desc: 'काम पूरा होने पर ही पैसा रिलीज़ होता है।' }
+        ],
+        faq: [
+          { q: 'कारीगर सत्यापित कैसे होते हैं?', a: 'हर कारीगर आधार से सत्यापित होता है और उसके पिछले कामों की रेटिंग दिखती है।' },
+          { q: 'रेट कौन तय करता है?', a: 'रेट पहले से फिक्स और पारदर्शी होते हैं — साइट पर कोई मोलभाव नहीं।' },
+          { q: 'पैसा कैसे सुरक्षित रहता है?', a: 'पैसा सुरक्षित रखा जाता है और काम पूरा होने पर ही कारीगर को रिलीज़ होता है।' },
+          { q: 'कब लॉन्च होगा?', a: 'गुरुग्राम में जल्द। अभी जुड़ने वालों को प्राथमिकता पहुँच मिलेगी।' }
+        ],
+        bannerH: 'पहले दिन से सही हाथ',
+        bannerP: 'अर्ली एक्सेस लिस्ट में जुड़ें — लॉन्च पर सबसे पहले आपको बताएँगे।'
+      },
+      work: {
+        navCta: 'अभी जुड़ें',
+        eyebrow: 'जल्द आ रहा है · गुरुग्राम में पहले',
+        h1a: 'आपका हुनर। आपका पैसा।',
+        h1b: 'आपकी पहचान।',
+        sub: 'कोई ठेकेदार नहीं। कोई कटौती नहीं। रोज़ का पैसा रोज़।',
+        cardEyebrow: '३० सेकंड में जुड़ें',
+        cardTitle: 'अपना नाम लिखाएँ',
+        phoneLabel: 'मोबाइल नंबर',
+        skillLabel: 'आपका हुनर?',
+        areaLabel: 'इलाका / सेक्टर',
+        areaPh: 'जैसे: सेक्टर 56',
+        submit: 'अभी जुड़ें',
+        note: 'अभी सिर्फ़ नंबर और हुनर — बाकी सब बाद में',
+        successTitle: 'आप सूची में हैं!',
+        successBody: 'लॉन्च पर हम SMS करेंगे। बाकी जानकारी — फ़ोटो, आधार, अनुभव — तब भरें।',
+        editBtn: 'जानकारी बदलें',
+        pills: [
+          { ic: 'rupee', text: 'पूरा पैसा, कोई कटौती नहीं' },
+          { ic: 'shield', text: 'आधार-सत्यापित, सुरक्षित' },
+          { ic: 'check', text: 'जुड़ना मुफ़्त' }
+        ],
+        stats: [
+          { big: '12,480', live: true, lab: 'कारीगर पहले से\nतैयार हैं' },
+          { big: '0%', lab: 'कटौती — पूरा पैसा\nआपके खाते में' },
+          { big: 'रोजँ', lab: 'भुगतान — काम के\nदिन ही पैसा' }
+        ],
+        tickerVerb: 'अभी जुड़े',
+        stepsHead: 'तीन आसान कदम',
+        stepsSub: 'जुड़ें, सत्यापित हों, काम और पैसा पाएँ।',
+        steps: [
+          { ic: 'person', title: 'जुड़ें', desc: 'नंबर और हुनर — बस इतना।' },
+          { ic: 'shield', title: 'सत्यापित हों', desc: 'लॉन्च पर आधार से, एक बार में।' },
+          { ic: 'rupee', title: 'काम और पैसा पाएँ', desc: 'पूरा पैसा सीधे खाते में — कोई कटौती नहीं।' }
+        ],
+        faq: [
+          { q: 'क्या जुड़ना मुफ़्त है?', a: 'हाँ। जुड़ना और प्रोफ़ाइल बनाना हमेशा मुफ़्त है।' },
+          { q: 'मेरा पैसा सुरक्षित रहेगा?', a: 'काम का पूरा पैसा सुरक्षित रहता है और सीधे आपके बैंक खाते में आता है — कोई दलाल कटौती नहीं कर सकता।' },
+          { q: 'कब शुरू होगा?', a: 'गुरुग्राम में जल्द। अभी जुड़ने वाले कारीगर पहले दिन से तैयार रहेंगे।' }
+        ],
+        bannerH: 'लॉन्च पर तैयार रहें',
+        bannerP: 'अभी नाम लिखाएँ — पहला काम छूटने न दें।'
+      },
+      common: {
+        hireTab: 'काम कराएँ',
+        workTab: 'काम पाएँ',
+        lookingForWork: 'काम ढूँढ रहे हैं?',
+        needWorkers: 'कारीगर चाहिए?',
+        cantFillPhone: 'फ़ोन पर नहीं भर पा रहे?',
+        missedCallInstructions: 'मिस्ड कॉल दें — हम कॉल करेंगे',
+        questionsEyebrow: 'सवाल-जवाब',
+        questionsTitle: 'अक्सर पूछे जाते हैं',
+        questionsSub: 'और कुछ पूछना है? मिस्ड कॉल दें — हम कॉल करेंगे।',
+        otherTradePlaceholder: 'कौन सा काम? यहाँ लिखें'
+      }
     }
   }
 };

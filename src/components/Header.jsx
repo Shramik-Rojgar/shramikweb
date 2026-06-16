@@ -19,10 +19,10 @@ export default function Header({
 }) {
   const isDark = theme === 'dark';
   return (
-    <header className={`flex justify-between items-center px-4 md:px-16 py-3 md:py-4 border-b transition-colors duration-200 ${
+    <header className={`flex justify-between items-center px-4 md:px-16 py-3 md:py-4 border-b transition-colors duration-200 sticky top-0 z-50 ${
       isDark 
         ? 'bg-[#0E1626] border-slate-800 text-white' 
-        : 'bg-white border-slate-100 text-slate-900 shadow-sm'
+        : 'bg-[rgba(255,250,239,0.74)] backdrop-blur-md border-[rgba(20,16,28,0.08)] text-[var(--ink)]'
     }`}>
       {/* Left section: Logo or Back */}
       <div className="flex items-center gap-3">
@@ -30,7 +30,7 @@ export default function Header({
           <button 
             onClick={onBack}
             className={`flex items-center gap-1.5 font-bold transition-all cursor-pointer text-sm ${
-              isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-shramik-navy'
+              isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-[var(--ink)]'
             }`}
           >
             <ArrowLeft className="w-4 h-4" />
@@ -51,7 +51,7 @@ export default function Header({
             <SelectTrigger className={`h-8 w-14 font-black font-sans cursor-pointer text-xs border-slate-200 bg-slate-50 text-slate-700 focus:ring-0 ${
               isDark 
                 ? 'bg-slate-900 border-slate-800 text-white focus-visible:ring-slate-800' 
-                : 'bg-slate-50 border-slate-200 text-slate-700 focus-visible:ring-slate-200'
+                : 'bg-white/70 border-[rgba(255,255,255,0.78)] text-[var(--ink)] backdrop-blur-sm focus-visible:ring-[rgba(255,255,255,0.78)] shadow-sm'
             }`}>
               <SelectValue>{language === 'hi' ? 'अ' : 'A'}</SelectValue>
             </SelectTrigger>

@@ -98,7 +98,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
   };
 
   return (
-    <div className="min-h-screen bg-surface-gray-2 text-[#1C2733] font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-transparent text-[#1C2733] font-sans flex flex-col justify-between">
       <Header 
         theme="light" 
         onNavigate={onNavigate} 
@@ -108,16 +108,16 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
       />
 
       <main className="max-w-md w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
-        <div className="bg-white border border-[#DDE3EA] rounded-3xl p-5 sm:p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-kaam-orange mb-2 font-display">{t.title}</h2>
+        <div className="glass-card rounded-3xl p-5 sm:p-8">
+          <h2 className="text-2xl font-bold text-[#14101C] mb-2 font-display">{t.title}</h2>
           <p className="text-slate-500 text-sm mb-6 font-semibold">{t.subtitle}</p>
 
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-6 text-center">
-              <div className="text-prosperity-green bg-emerald-50 p-4 rounded-full mb-4 border border-emerald-100 animate-bounce">
+              <div className="text-green bg-green-soft p-4 rounded-full mb-4 border border-[#16B364]/20 animate-bounce">
                 <Check className="w-10 h-10 stroke-[3]" />
               </div>
-              <h3 className="text-lg font-bold mb-1 text-shramik-navy font-display">{t.successTitle}</h3>
+              <h3 className="text-lg font-bold mb-1 text-ink font-display">{t.successTitle}</h3>
               <p className="text-sm text-slate-500 font-semibold">{t.successSubtitle}</p>
             </div>
           ) : (
@@ -131,7 +131,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
                   placeholder={language === 'hi' ? 'पूरा नाम दर्ज करें' : 'Enter full name'}
                   value={formData.name}
                   onChange={handleChange}
-                  className={`h-12 border rounded-xl px-4 py-3 text-slate-800 bg-white focus:outline-none focus:border-kaam-orange focus-visible:ring-kaam-orange/20 ${errors.name ? 'border-dispute-red' : 'border-slate-200'}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.name ? 'border-dispute-red' : ''}`}
                 />
                 {errors.name && <span className="text-xs text-dispute-red">{errors.name}</span>}
               </div>
@@ -146,7 +146,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
                   value={formData.mobile}
                   onChange={handleChange}
                   maxLength={10}
-                  className={`h-12 border rounded-xl px-4 py-3 text-slate-800 bg-white focus:outline-none focus:border-kaam-orange focus-visible:ring-kaam-orange/20 ${errors.mobile ? 'border-dispute-red' : 'border-slate-200'}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.mobile ? 'border-dispute-red' : ''}`}
                 />
                 {errors.mobile && <span className="text-xs text-dispute-red">{errors.mobile}</span>}
               </div>
@@ -162,7 +162,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
                       placeholder={t.locationPlaceholder}
                       value={formData.location}
                       onChange={handleChange}
-                      className={`h-12 border rounded-xl pl-4 pr-10 py-3 text-slate-800 bg-white focus:outline-none focus:border-kaam-orange focus-visible:ring-kaam-orange/20 ${errors.location ? 'border-dispute-red' : 'border-slate-200'}`}
+                      className={`glass-input h-12 border rounded-xl pl-4 pr-10 py-3 focus:outline-none ${errors.location ? 'border-dispute-red' : ''}`}
                     />
                     <MapPin className="absolute right-3 top-3.5 w-5 h-5 text-slate-400" />
                   </div>
@@ -171,7 +171,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
                     type="button"
                     onClick={detectLocation}
                     disabled={isLocating}
-                    className="bg-kaam-orange hover:bg-orange-cta-safe disabled:bg-kaam-orange/60 text-white font-bold h-12 w-12 rounded-xl cursor-pointer flex items-center justify-center flex-shrink-0 transition-colors shadow-sm border-0"
+                    className="bg-brand-grad hover:opacity-90 text-white font-bold h-12 w-12 rounded-xl cursor-pointer flex items-center justify-center flex-shrink-0 transition-all shadow-sm border-0"
                     title={language === 'hi' ? 'वर्तमान स्थान का पता लगाएं' : 'Detect current location'}
                   >
                     {isLocating ? (
@@ -195,7 +195,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
                       setErrors(prev => ({ ...prev, agreeTerms: '' }));
                     }
                   }}
-                  className="mt-0.5 border-slate-300 data-[state=checked]:bg-kaam-orange data-[state=checked]:border-kaam-orange data-[state=checked]:text-white cursor-pointer"
+                  className="mt-0.5 border-slate-300 data-[state=checked]:bg-accent data-[state=checked]:border-accent data-[state=checked]:text-white cursor-pointer"
                 />
                 <div className="flex flex-col text-left">
                   <Label htmlFor="agreeTerms" className="text-xs text-[#5B6B7B] cursor-pointer font-semibold leading-relaxed">
@@ -209,7 +209,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 bg-kaam-orange hover:bg-orange-cta-safe text-white font-bold rounded-xl mt-4 cursor-pointer flex items-center justify-center gap-2 font-display text-base border-0 transition-colors shadow-sm"
+                className="w-full h-12 bg-brand-grad hover:opacity-90 text-white font-bold rounded-xl mt-4 cursor-pointer flex items-center justify-center gap-2 font-display text-base border-0 transition-all shadow-md"
               >
                 {isSubmitting ? (
                   <>

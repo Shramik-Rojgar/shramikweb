@@ -168,7 +168,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
   };
 
   return (
-    <div className="min-h-screen bg-surface-gray-2 text-[#1C2733] font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-transparent text-[#1C2733] font-sans flex flex-col justify-between">
       <Header 
         theme="light" 
         onNavigate={onNavigate} 
@@ -178,16 +178,16 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       />
 
       <main className="max-w-xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
-        <div className="bg-white border border-[#DDE3EA] rounded-3xl p-5 sm:p-8 md:p-10 shadow-sm">
-          <h2 className="text-3xl font-bold text-shramik-navy mb-2 font-display">{t.title}</h2>
+        <div className="glass-card rounded-3xl p-5 sm:p-8 md:p-10">
+          <h2 className="text-3xl font-bold text-ink mb-2 font-display">{t.title}</h2>
           <p className="text-slate-500 text-sm mb-8 font-semibold">{t.subtitle}</p>
 
           {isSuccess ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="text-prosperity-green bg-emerald-50 p-5 rounded-full mb-6 border border-emerald-100 animate-bounce">
+              <div className="text-green bg-green-soft p-5 rounded-full mb-6 border border-[#16B364]/20 animate-bounce">
                 <Check className="w-12 h-12 stroke-[3]" />
               </div>
-              <h3 className="text-2xl font-bold mb-2 text-shramik-navy font-display">{t.successTitle}</h3>
+              <h3 className="text-2xl font-bold mb-2 text-ink font-display">{t.successTitle}</h3>
               <p className="text-base text-slate-500 font-semibold">{t.successSubtitle}</p>
             </div>
           ) : (
@@ -202,7 +202,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                   placeholder={language === 'hi' ? 'अपना पूरा नाम दर्ज करें' : 'Enter your full name'}
                   value={formData.name}
                   onChange={handleChange}
-                  className={`h-12 border rounded-xl px-4 py-3 text-slate-800 bg-white focus:outline-none focus:border-shramik-navy ${errors.name ? 'border-dispute-red' : 'border-slate-200'}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.name ? 'border-dispute-red' : ''}`}
                 />
                 {errors.name && <span className="text-xs text-dispute-red">{errors.name}</span>}
               </div>
@@ -251,7 +251,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                       role="combobox"
                       aria-expanded={isSkillsOpen}
                       className={cn(
-                        "w-full h-auto min-h-12 justify-between px-4 py-2 bg-white hover:bg-white text-slate-800 border rounded-xl hover:text-slate-800 focus:ring-0 focus-visible:ring-2 focus-visible:ring-shramik-navy cursor-pointer",
+                        "w-full h-auto min-h-12 justify-between px-4 py-2 bg-white hover:bg-white text-slate-800 border rounded-xl hover:text-slate-800 focus:ring-0 focus-visible:ring-2 focus-visible:ring-[#7A3BFF] cursor-pointer",
                         errors.skills ? "border-dispute-red" : "border-slate-200"
                       )}
                     >
@@ -267,7 +267,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                               <Badge
                                 key={skill.id}
                                 variant="secondary"
-                                className="bg-shramik-navy hover:bg-shramik-navy-hover text-white hover:text-white flex items-center gap-1 py-0.5 px-2 text-xs font-semibold rounded-lg font-sans border-0"
+                                className="bg-[#7A3BFF] hover:bg-[#7A3BFF] text-white hover:text-white flex items-center gap-1 py-0.5 px-2 text-xs font-semibold rounded-lg font-sans border-0"
                               >
                                 <span>{skillLabel}</span>
                                 <span
@@ -313,7 +313,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                                 className={cn(
                                   "flex items-center justify-between py-2 px-3 rounded-xl font-semibold text-xs md:text-sm cursor-pointer transition-all duration-150 text-left",
                                   isSelected 
-                                    ? "bg-slate-50 text-shramik-navy" 
+                                    ? "bg-slate-50 text-[#7A3BFF]" 
                                     : "hover:bg-slate-50 text-slate-700"
                                 )}
                               >
@@ -351,8 +351,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                         }}
                         className={`py-2 px-4 rounded-xl border font-semibold text-xs md:text-sm transition-all duration-150 cursor-pointer ${
                           isSelected 
-                            ? 'bg-shramik-navy border-shramik-navy text-white shadow-sm' 
-                            : 'bg-surface-gray-2 border-slate-200 hover:border-shramik-navy/30 text-slate-700'
+                            ? 'bg-[#7A3BFF] border-transparent text-white shadow-sm' 
+                            : 'glass-chip hover:border-slate-350 text-slate-700'
                         }`}
                       >
                         <span>{expLabel}</span>
@@ -368,7 +368,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.expectedWage}</Label>
                 <p className="text-[10px] text-slate-400 font-semibold mb-2">{t.wageSubtext}</p>
                 
-                <div className="flex items-center gap-3 w-fit bg-surface-gray-2 border border-slate-200 p-1.5 rounded-2xl">
+                <div className="flex items-center gap-3 w-fit bg-surface-gray-2/50 border border-slate-200 p-1.5 rounded-2xl">
                     <Button
                       type="button"
                       onClick={() => adjustRate(-50)}
@@ -381,7 +381,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                     </Button>
                     
                     <div className="min-w-28 text-center">
-                      <span className="text-2xl font-black text-[#1C2733] font-display">₹{formData.dailyRate}</span>
+                      <span className="text-2xl font-black text-ink font-display">₹{formData.dailyRate}</span>
                       <span className="block text-[9px] text-slate-400 font-semibold">{t.wagePerDay}</span>
                     </div>
 
@@ -409,7 +409,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                       placeholder={t.locationPlaceholder}
                       value={formData.location}
                       onChange={handleChange}
-                      className={`h-12 border rounded-xl pl-4 pr-10 py-3 text-slate-800 bg-white focus:outline-none focus:border-shramik-navy ${errors.location ? 'border-dispute-red' : 'border-slate-200'}`}
+                      className={`glass-input h-12 border rounded-xl pl-4 pr-10 py-3 focus:outline-none ${errors.location ? 'border-dispute-red' : ''}`}
                     />
                     <MapPin className="absolute right-3 top-3.5 w-5 h-5 text-slate-400" />
                   </div>
@@ -418,7 +418,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                     type="button"
                     onClick={detectLocation}
                     disabled={isLocating}
-                    className="bg-shramik-navy hover:bg-shramik-navy-hover disabled:bg-shramik-navy/60 text-white font-bold h-12 w-12 rounded-xl cursor-pointer flex items-center justify-center flex-shrink-0 transition-colors shadow-sm border-0"
+                    className="bg-[#7A3BFF] hover:bg-[#662EE5] text-white font-bold h-12 w-12 rounded-xl cursor-pointer flex items-center justify-center flex-shrink-0 transition-colors shadow-sm border-0"
                     title={language === 'hi' ? 'वर्तमान स्थान का पता लगाएं' : 'Detect current location'}
                   >
                     {isLocating ? (
@@ -434,7 +434,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-14 bg-shramik-navy hover:bg-shramik-navy-hover disabled:bg-shramik-navy/60 text-white font-bold rounded-2xl mt-4 cursor-pointer flex items-center justify-center gap-2 font-display text-lg shadow-md transition-colors border-0"
+                className="w-full h-14 bg-brand-grad hover:opacity-90 text-white font-bold rounded-2xl mt-4 cursor-pointer flex items-center justify-center gap-2 font-display text-lg shadow-md transition-all border-0"
               >
                 {isSubmitting ? (
                   <>

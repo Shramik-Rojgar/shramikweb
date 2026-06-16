@@ -56,7 +56,7 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
   };
 
   return (
-    <div className="min-h-screen bg-surface-gray-2 text-[#1C2733] font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-transparent text-[#1C2733] font-sans flex flex-col justify-between">
       <Header 
         theme="light" 
         onNavigate={onNavigate} 
@@ -66,8 +66,8 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
       />
 
       <main className="max-w-md w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
-        <div className="bg-white border border-[#DDE3EA] rounded-3xl p-5 sm:p-8 shadow-sm">
-          <h2 className="text-2xl font-bold text-shramik-navy mb-2 font-display">{t.title}</h2>
+        <div className="glass-card rounded-3xl p-5 sm:p-8">
+          <h2 className="text-2xl font-bold text-ink mb-2 font-display">{t.title}</h2>
           <p className="text-slate-500 text-sm mb-6 font-semibold">{t.subtitle}</p>
 
           {isSuccess ? (
@@ -88,7 +88,7 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
                   placeholder={language === 'hi' ? 'you@example.com या मोबाइल' : 'you@example.com or mobile'}
                   value={formData.email}
                   onChange={handleChange}
-                  className={`h-12 border rounded-xl px-4 py-3 text-slate-800 bg-white focus:outline-none focus:border-shramik-navy ${errors.email ? 'border-dispute-red' : 'border-slate-200'}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.email ? 'border-dispute-red' : ''}`}
                 />
                 {errors.email && <span className="text-xs text-dispute-red">{errors.email}</span>}
               </div>
@@ -101,7 +101,7 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`h-12 border rounded-xl px-4 py-3 text-slate-800 bg-white focus:outline-none focus:border-shramik-navy ${errors.password ? 'border-dispute-red' : 'border-slate-200'}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.password ? 'border-dispute-red' : ''}`}
                 />
                 {errors.password && <span className="text-xs text-dispute-red">{errors.password}</span>}
               </div>
@@ -109,7 +109,7 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-shramik-navy hover:bg-shramik-navy-hover text-white font-bold h-12 rounded-xl mt-4 cursor-pointer font-display text-base border-0 transition-colors shadow-sm"
+                className="w-full bg-brand-grad hover:opacity-90 text-white font-bold h-12 rounded-xl mt-4 cursor-pointer font-display text-base border-0 transition-all shadow-md"
               >
                 {isSubmitting ? t.submittingBtn : t.submitBtn}
               </Button>
