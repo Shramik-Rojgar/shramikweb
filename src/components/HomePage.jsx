@@ -146,17 +146,10 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
                   <img 
-                    src="/team_with_workers.png" 
+                    src="/IMG_0661.HEIC" 
                     className="w-full h-full object-cover" 
                     alt="Shramik Ground Team"
-                    onError={(e) => { e.target.style.display = 'none'; }}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
-                    <span className="text-xs font-bold text-[var(--ink)] bg-white/95 px-3.5 py-2 rounded-full uppercase tracking-wider font-sans border border-slate-200 shadow-sm flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-pulse"></span>
-                      {language === 'hi' ? 'श्रमिक ग्राउंड टीम' : 'Shramik Ground Team'}
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -173,17 +166,10 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
                   <img 
-                    src="/registration_drive.png" 
+                    src="/IMG_3850.JPG" 
                     className="w-full h-full object-cover" 
                     alt="Shramik Support Team"
-                    onError={(e) => { e.target.style.display = 'none'; }}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
-                    <span className="text-xs font-bold text-[var(--ink)] bg-white/95 px-3.5 py-2 rounded-full uppercase tracking-wider font-sans border border-slate-200 shadow-sm flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[var(--green)] animate-pulse"></span>
-                      {language === 'hi' ? 'श्रमिक ऑन-साइट सहायता टीम' : 'Shramik On-Site Support Team'}
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
@@ -299,45 +285,21 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
                 <img 
-                  src="/workers_showcase.png" 
+                  src="/IMG_0952.HEIC" 
                   className="w-full h-full object-cover" 
                   alt="Shramik Workers"
-                  onError={(e) => { e.target.style.display = 'none'; }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
-                  <span className="text-xs font-bold text-slate-500 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-md font-sans border border-slate-200">
-                    {language === 'hi' ? '१. कार्यस्थल पर कारीगर' : '1. Workers on Site'}
-                  </span>
-                </div>
               </div>
-              <h4 className="font-display font-bold text-lg text-[var(--ink)] mt-2">
-                {language === 'hi' ? 'हमारे कर्मठ कामगार' : 'Our Skilled Workforce'}
-              </h4>
-              <p className="text-xs text-slate-500 font-medium font-sans">
-                {language === 'hi' ? 'सभी कामगार आधार-सत्यापित, कुशल और पेशेवर हैं।' : 'All workers are Aadhaar-verified, skilled, and professional.'}
-              </p>
             </div>
             
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
                 <img 
-                  src="/registration_drive.png" 
+                  src="/IMG_0842.HEIC" 
                   className="w-full h-full object-cover" 
                   alt="Registration Drive"
-                  onError={(e) => { e.target.style.display = 'none'; }}
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/5 hover:bg-black/10 transition-colors">
-                  <span className="text-xs font-bold text-slate-500 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-full shadow-md font-sans border border-slate-200">
-                    {language === 'hi' ? '२. सत्यापन एवं सहायता' : '2. Verification & Support'}
-                  </span>
-                </div>
               </div>
-              <h4 className="font-display font-bold text-lg text-[var(--ink)] mt-2">
-                {language === 'hi' ? 'टीम का सहयोग और सत्यापन' : 'On-Site Support & Verification'}
-              </h4>
-              <p className="text-xs text-slate-500 font-medium font-sans">
-                {language === 'hi' ? 'हमारी टीम सीधे कामगारों से मिलकर उनका कौशल जांचती है और सहायता प्रदान करती है।' : 'Our team meets workers directly on-site to verify skills and provide support.'}
-              </p>
             </div>
           </div>
         </section>
