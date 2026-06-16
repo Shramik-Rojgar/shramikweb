@@ -109,7 +109,7 @@ export default function AboutUsPage({ onNavigate, language = 'hi', onLanguageCha
         </section>
 
         {/* 2. STORY & CHALLENGES SECTION */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <section className="grid grid-cols-1 md:grid-cols-[1fr_1.3fr] gap-10 items-center">
           <div className="flex flex-col gap-5">
             <h3 className="text-2xl font-bold text-[var(--ink)] font-display">{t.challengesTitle}</h3>
             <p className="text-slate-600 text-sm md:text-base leading-relaxed font-semibold">
@@ -127,12 +127,12 @@ export default function AboutUsPage({ onNavigate, language = 'hi', onLanguageCha
             </ul>
           </div>
           
-          <div className="glass rounded-3xl p-3 shadow-md">
-            <div className="relative aspect-video rounded-2xl bg-slate-100 overflow-hidden flex items-center justify-center">
+          <div className="glass rounded-3xl p-3 shadow-md w-full">
+            <div className="relative aspect-[4/3] rounded-2xl bg-slate-100 overflow-hidden flex items-center justify-center shadow-inner">
               <img 
-                src="/team_with_workers.png" 
+                src="/hero_home.jpg" 
                 className="w-full h-full object-cover" 
-                alt="Shramik Ground Team"
+                alt="Building Dignity through Work"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
               <div className="absolute inset-0 bg-black/5"></div>
