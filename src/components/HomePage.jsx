@@ -579,18 +579,17 @@ function HeroForm({ aud, t, language, tCommon, speakForm }) {
 // ── SUBCOMPONENT: STATSSECTION ──────────────────────────────────────────────
 function StatsSection({ aud, t, language }) {
   const [idx, setIdx] = useState(0);
+  const tickerData = aud === 'hire' ? RECENT_HIRERS : RECENT_WORKERS;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIdx((prev) => (prev + 1) % t.stats[0].tickerData.length);
+      setIdx((prev) => (prev + 1) % tickerData.length);
     }, 3200);
     return () => clearInterval(interval);
-  }, [aud, t.stats]);
+  }, [aud, tickerData.length]);
 
   const L = (o) => (o ? (language === 'hi' ? o.hi : o.en) : '');
 
-  // Add mock scrolling data to stats matching the ticker verb
-  const tickerData = aud === 'hire' ? RECENT_HIRERS : RECENT_WORKERS;
   const currentRecord = tickerData[idx];
 
   return (
