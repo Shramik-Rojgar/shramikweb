@@ -142,7 +142,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
         </button>
         <button 
           onClick={() => onNavigate('signup', 'choose')}
-          className="bg-[var(--ink)] hover:bg-[var(--violet)] text-white py-1.5 px-3.5 sm:py-2 sm:px-5 rounded-full transition-all duration-200 cursor-pointer font-sans shadow-sm"
+          className="bg-[var(--ink)] hover:opacity-90 text-white py-1.5 px-3.5 sm:py-2 sm:px-5 rounded-full transition-all duration-200 cursor-pointer font-sans shadow-sm"
           id="btn-nav-signup"
         >
           {language === 'hi' ? 'साइन अप' : 'Sign Up'}

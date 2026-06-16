@@ -418,7 +418,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                     type="button"
                     onClick={detectLocation}
                     disabled={isLocating}
-                    className="bg-[#7A3BFF] hover:bg-[#662EE5] text-white font-bold h-12 w-12 rounded-xl cursor-pointer flex items-center justify-center flex-shrink-0 transition-colors shadow-sm border-0"
+                    className="bg-[var(--ink)] hover:opacity-90 text-white font-bold h-12 w-12 rounded-xl cursor-pointer flex items-center justify-center flex-shrink-0 transition-colors shadow-sm border-0"
                     title={language === 'hi' ? 'वर्तमान स्थान का पता लगाएं' : 'Detect current location'}
                   >
                     {isLocating ? (

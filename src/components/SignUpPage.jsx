@@ -136,7 +136,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
             </div>
             <button 
               onClick={() => setStep('laborer-signup')}
-              className="w-full bg-[var(--ink)] hover:bg-[var(--violet)] text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
+              className="w-full bg-[var(--ink)] hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
               id="btn-laborer-continue"
             >
               <span>{t.continueBtn}</span>
@@ -173,7 +173,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
             </div>
             <button 
               onClick={() => setStep('hirer-signup')}
-              className="w-full bg-[var(--ink)] hover:bg-[var(--violet)] text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
+              className="w-full bg-[var(--ink)] hover:opacity-90 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 group transition-all duration-200 cursor-pointer shadow-sm font-display text-base border-0"
               id="btn-hirer-continue"
             >
               <span>{t.continueBtn}</span>
