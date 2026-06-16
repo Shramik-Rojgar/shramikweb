@@ -48,12 +48,13 @@ export default function Header({
       <div className="flex items-center gap-3 sm:gap-6">
         {onLanguageChange && (
           <Select value={language} onValueChange={onLanguageChange}>
-            <SelectTrigger className={`h-8 w-14 font-black font-sans cursor-pointer text-xs border-slate-200 bg-slate-50 text-slate-700 focus:ring-0 ${
+            <SelectTrigger className={`h-8 w-14 font-black font-sans cursor-pointer text-xs focus:ring-0 ${
               isDark 
                 ? 'bg-slate-900 border-slate-800 text-white focus-visible:ring-slate-800' 
                 : 'bg-white/70 border-[rgba(255,255,255,0.78)] text-[var(--ink)] backdrop-blur-sm focus-visible:ring-[rgba(255,255,255,0.78)] shadow-sm'
             }`}>
-              <SelectValue>{language === 'hi' ? 'अ' : 'A'}</SelectValue>
+              <span>{language === 'hi' ? 'अ' : 'A'}</span>
+              <span className="hidden"><SelectValue /></span>
             </SelectTrigger>
             <SelectContent className="bg-white border border-[#DDE3EA] rounded-xl shadow-lg z-50">
               <SelectItem value="hi" className="cursor-pointer font-sans font-semibold text-xs md:text-sm">अ (हिन्दी)</SelectItem>
