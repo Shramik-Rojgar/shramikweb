@@ -53,7 +53,7 @@ export default function Header({
                 ? 'bg-slate-900 border-slate-800 text-white focus-visible:ring-slate-800' 
                 : 'bg-slate-50 border-slate-200 text-slate-700 focus-visible:ring-slate-200'
             }`}>
-              <span>{language === 'hi' ? 'अ' : 'A'}</span>
+              <SelectValue>{language === 'hi' ? 'अ' : 'A'}</SelectValue>
             </SelectTrigger>
             <SelectContent className="bg-white border border-[#DDE3EA] rounded-xl shadow-lg z-50">
               <SelectItem value="hi" className="cursor-pointer font-sans font-semibold text-xs md:text-sm">अ (हिन्दी)</SelectItem>
