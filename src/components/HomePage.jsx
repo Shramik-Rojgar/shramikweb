@@ -281,7 +281,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
                 <img
-                  src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec3_1.jpg"
+                  src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/Images_sec3_1.jpg"
                   className="w-full h-full object-cover"
                   alt="Shramik Workers"
                 />
@@ -291,7 +291,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
                 <img
-                  src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec3_2.jpg"
+                  src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/Images_sec3_2.jpg"
                   className="w-full h-full object-cover"
                   alt="Registration Drive"
                 />
