@@ -126,7 +126,7 @@ export const translations = {
         editBtn: 'Edit details',
         pills: [
           { ic: 'badge', text: 'Aadhaar-verified' },
-          { ic: 'clock', text: '~4 hr arrival' },
+          { ic: 'clock', text: 'At your door step' },
           { ic: 'lock', text: 'Fixed rates' }
         ],
         stats: [
@@ -335,7 +335,7 @@ export const translations = {
         editBtn: 'जानकारी बदलें',
         pills: [
           { ic: 'badge', text: 'आधार-सत्यापित' },
-          { ic: 'clock', text: '~4 घंटे में पहुँच' },
+          { ic: 'clock', text: 'आपके दरवाज़े पर' },
           { ic: 'lock', text: 'फिक्स रेट' }
         ],
         stats: [

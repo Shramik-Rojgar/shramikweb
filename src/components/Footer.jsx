@@ -9,11 +9,10 @@ export default function Footer({ theme = 'light' }) {
         <i className="w"></i>
         <i className="g"></i>
       </div>
-      <footer className={`w-full py-8 px-6 md:px-16 transition-colors duration-200 ${
-        isDark 
-          ? 'bg-[#0E1626] border-t border-slate-800 text-slate-400' 
+      <footer className={`w-full py-8 px-6 md:px-16 transition-colors duration-200 ${isDark
+          ? 'bg-[#0E1626] border-t border-slate-800 text-slate-400'
           : 'bg-[rgba(255,255,255,0.42)] border-t border-[rgba(20,16,28,0.08)] text-[var(--mut)]'
-      }`}>
+        }`}>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Left branding */}
           <div className="text-center md:text-left flex flex-col items-center md:items-start">
@@ -21,7 +20,7 @@ export default function Footer({ theme = 'light' }) {
               श्रमिक SHRAMIK
             </span>
             <p className="text-xs text-slate-500 mt-1 font-semibold">
-              © 2026 Shramik Rozgar Pvt. Ltd. All rights reserved.
+              © 2026 Shramik Rojgar Pvt. Ltd. All rights reserved.
             </p>
           </div>
 
