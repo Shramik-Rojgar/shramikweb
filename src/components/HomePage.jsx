@@ -162,7 +162,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
                   <img
-                    src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec2.JPG"
+                    src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/Images_sec2.jpg"
                     className="w-full h-full object-cover"
                     alt="Shramik Support Team"
                   />
