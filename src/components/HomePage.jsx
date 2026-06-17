@@ -142,7 +142,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
                   <img
-                    src="/IMG_0661.HEIC"
+                    src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec1.jpg"
                     className="w-full h-full object-cover"
                     alt="Shramik Ground Team"
                   />
@@ -162,7 +162,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="rounded-3xl overflow-hidden border border-[rgba(20,16,28,0.08)] bg-white/50 backdrop-blur-sm p-2 shadow-md w-full">
                 <div className="relative aspect-video sm:aspect-[4/3] rounded-2xl bg-slate-100/80 overflow-hidden flex items-center justify-center">
                   <img
-                    src="/IMG_3850.JPG"
+                    src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec2.JPG"
                     className="w-full h-full object-cover"
                     alt="Shramik Support Team"
                   />
@@ -281,7 +281,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
                 <img
-                  src="/IMG_0952.HEIC"
+                  src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec3_1.jpg"
                   className="w-full h-full object-cover"
                   alt="Shramik Workers"
                 />
@@ -291,8 +291,8 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="glass rounded-3xl p-6 flex flex-col gap-4 items-center text-center">
               <div className="w-full aspect-video rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center relative">
                 <img
-                  src="/IMG_0842.HEIC"
-                  className="w-full h-half object-cover"
+                  src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/sec3_2.jpg"
+                  className="w-full h-full object-cover"
                   alt="Registration Drive"
                 />
               </div>

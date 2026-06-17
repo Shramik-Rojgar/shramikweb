@@ -126,7 +126,7 @@ export default function AboutUsPage({ onNavigate, language = 'hi', onLanguageCha
           <div className="glass rounded-3xl p-3 shadow-md w-full">
             <div className="relative aspect-[4/3] rounded-2xl bg-slate-100 overflow-hidden flex items-center justify-center shadow-inner">
               <img 
-                src="/hero_home.jpg" 
+                src="https://pub-37e3c04824854265b66bbf6ae90c3b5e.r2.dev/Images/aboutus.jpg" 
                 className="w-full h-full object-cover" 
                 alt="Building Dignity through Work"
                 onError={(e) => { e.target.style.display = 'none'; }}
