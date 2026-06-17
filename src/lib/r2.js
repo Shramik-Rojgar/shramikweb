@@ -24,9 +24,9 @@ const r2Client = new S3Client({
  * @param {string} userId     - Used to namespace the file path.
  * @returns {Promise<string>} - Public CDN URL of the uploaded file.
  */
-export async function uploadToR2(file, folder, userId) {
-  const ext      = file.name.split('.').pop();
-  const key      = `${folder}/${userId}_${Date.now()}.${ext}`;
+export async function uploadToR2(file, folder, workerId) {
+  const ext      = file.name.split('.').pop().toLowerCase();
+  const key      = `${folder}/${workerId}.${ext}`;
   const buffer   = await file.arrayBuffer();
 
   await r2Client.send(

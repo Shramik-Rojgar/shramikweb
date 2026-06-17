@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { translations } from '../lib/translations';
 import { supabase } from '../lib/supabase';
-import { uploadToR2 } from '../lib/r2';
+import { uploadFile } from '../lib/storage';
 
 // ── Icon helpers ────────────────────────────────────────────────────────────
 const I = {
@@ -185,49 +185,53 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     setErrors({});
 
     try {
-      // 1. Create auth user (phone → pseudo email so no OTP required at this stage)
-      setSubmitStage(L('खाता बना रहे हैं…', 'Creating account…'));
-      const pseudoEmail = `worker${formData.phone}@shramik.workers`;
-      const pseudoPass  = `${formData.phone}${formData.dob.replace(/-/g, '')}`;
-
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email:    pseudoEmail,
-        password: pseudoPass,
-      });
-
-      if (authError) throw new Error(authError.message);
-      const userId = authData.user?.id;
-      if (!userId) throw new Error('Could not create account. Please try again.');
-
-      // 2. Upload profile photo to R2
-      setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
-      const photoUrl = await uploadToR2(photoFile, 'photos', userId);
-
-      // 3. Upload government ID to R2
-      setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
-      const govIdUrl = await uploadToR2(govIdFile, 'govids', userId);
-
-      // 4. Insert into labourers table
+      // 1. Insert into labourers table first to get the DB-generated id
       setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
       const [skill1, skill2, skill3] = formData.skills;
 
-      const { error: insertError } = await supabase.from('labourers').insert({
-        id:                userId,
-        full_name:         formData.name.trim(),
-        mobile_no:         formData.phone.trim(),
-        date_of_birth:     formData.dob,
-        gender:            formData.gender,
-        skill_1:           skill1,
-        skill_2:           skill2 ?? null,
-        skill_3:           skill3 ?? null,
-        experience_level:  formData.experience,
-        daily_wage:        formData.dailyWage,
-        photo_url:         photoUrl,
-        government_id_url: govIdUrl,
-        status:            'pending',
-      });
+      const { data: insertData, error: insertError } = await supabase
+        .from('labourers')
+        .insert({
+          full_name:        formData.name.trim(),
+          mobile_no:        formData.phone.trim(),
+          date_of_birth:    formData.dob,
+          gender:           formData.gender,
+          skill_1:          skill1,
+          skill_2:          skill2 ?? null,
+          skill_3:          skill3 ?? null,
+          experience_level: formData.experience,
+          daily_wage:       formData.dailyWage,
+          status:           'pending',
+        })
+        .select('id')
+        .single();
 
-      if (insertError) throw new Error(insertError.message);
+      if (insertError) {
+        if (insertError.code === '23505' && insertError.message.includes('mobile_no')) {
+          throw new Error(L(
+            'आपका नंबर पहले से पंजीकृत है। आपका आवेदन समीक्षाधीन है।',
+            'You have already registered. Your account is under review.'
+          ));
+        }
+        throw new Error(insertError.message);
+      }
+      const workerId = insertData.id;
+
+      // 2. Upload profile photo named by worker id
+      setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
+      const photoUrl = await uploadFile(photoFile, 'laborprofile', workerId);
+
+      // 3. Upload government ID named by worker id
+      setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
+      const govIdUrl = await uploadFile(govIdFile, 'laborgovid', workerId);
+
+      // 4. Update row with file URLs
+      const { error: updateError } = await supabase
+        .from('labourers')
+        .update({ photo_url: photoUrl, government_id_url: govIdUrl })
+        .eq('id', workerId);
+
+      if (updateError) throw new Error(updateError.message);
 
       setIsSuccess(true);
       setTimeout(() => {
