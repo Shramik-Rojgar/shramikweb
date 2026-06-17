@@ -84,6 +84,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     skills:      [],   // max 3 — mapped to skill_1, skill_2, skill_3
     experience:  '',
     dailyWage:   600,
+    city:        '',
+    state:       '',
   });
 
   const [photoFile,   setPhotoFile]   = useState(null);
@@ -168,6 +170,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     if (formData.skills.length === 0)
                                  e.skills   = L('कम से कम एक हुनर चुनें', 'Select at least one skill');
     if (!formData.experience)    e.experience = L('अनुभव चुनें', 'Select experience level');
+    if (!formData.city.trim())   e.city     = L('शहर आवश्यक है', 'City is required');
+    if (!formData.state.trim())  e.state    = L('राज्य आवश्यक है', 'State is required');
     return e;
   };
 
@@ -201,6 +205,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           skill_3:          skill3 ?? null,
           experience_level: formData.experience,
           daily_wage:       formData.dailyWage,
+          city:             formData.city.trim(),
+          state:            formData.state.trim(),
           status:           'pending',
         })
         .select('id')
@@ -449,6 +455,30 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                 >
                   <Plus className="w-4 h-4 stroke-[3]" />
                 </Button>
+              </div>
+            </div>
+
+            {/* ── City + State ───────────────────────────── */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  {L('शहर', 'City')}
+                </Label>
+                <Input type="text" name="city" value={formData.city} onChange={handleChange}
+                  placeholder={L('जैसे: गुरुग्राम', 'e.g. Gurugram')}
+                  className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.city ? 'border-red-400' : ''}`}
+                />
+                {errors.city && <span className="text-xs text-red-500">{errors.city}</span>}
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  {L('राज्य', 'State')}
+                </Label>
+                <Input type="text" name="state" value={formData.state} onChange={handleChange}
+                  placeholder={L('जैसे: हरियाणा', 'e.g. Haryana')}
+                  className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.state ? 'border-red-400' : ''}`}
+                />
+                {errors.state && <span className="text-xs text-red-500">{errors.state}</span>}
               </div>
             </div>
 
