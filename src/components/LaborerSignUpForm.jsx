@@ -193,7 +193,14 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
       const [skill1, skill2, skill3] = formData.skills;
 
-      const { data: insertData, error: insertError } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log("USER:", user);
+
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log("SESSION:", session);
+
+      console.log("Before insert");
+      const { error: insertError } = await supabase
         .from('labourers')
         .insert({
           full_name:        formData.name.trim(),
@@ -208,9 +215,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           city:             formData.city.trim(),
           state:            formData.state.trim(),
           status:           'pending',
-        })
-        .select('id')
-        .single();
+        });
+      console.log("Insert result", insertError);
 
       if (insertError) {
         if (insertError.code === '23505' && insertError.message.includes('mobile_no')) {
@@ -221,21 +227,21 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
         }
         throw new Error(insertError.message);
       }
-      const workerId = insertData.id;
-
-      // 2. Upload profile photo named by worker id
+      // 2. Upload profile photo named by phone (unique identifier available without select)
       setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
-      const photoUrl = await uploadFile(photoFile, 'laborprofile', workerId);
+      const photoUrl = await uploadFile(photoFile, 'laborprofile', formData.phone.trim());
 
-      // 3. Upload government ID named by worker id
+      // 3. Upload government ID named by phone
       setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
-      const govIdUrl = await uploadFile(govIdFile, 'laborgovid', workerId);
+      const govIdUrl = await uploadFile(govIdFile, 'laborgovid', formData.phone.trim());
 
       // 4. Update row with file URLs
+      console.log("Before update");
       const { error: updateError } = await supabase
         .from('labourers')
         .update({ photo_url: photoUrl, government_id_url: govIdUrl })
-        .eq('id', workerId);
+        .eq('mobile_no', formData.phone.trim());
+      console.log("Update result", updateError);
 
       if (updateError) throw new Error(updateError.message);
 
