@@ -71,10 +71,10 @@ body {
   background-color: var(--page);
   color: var(--ink);
   background-image: 
-    radial-gradient(circle at 10% 20%, #FFCB5E66 0%, transparent 64%),
-    radial-gradient(circle at 90% 15%, #FFB05444 0%, transparent 64%),
-    radial-gradient(circle at 80% 80%, #FFD98A55 0%, transparent 64%),
-    radial-gradient(circle at 20% 85%, #FFC15e4d 0%, transparent 64%);
+    radial-gradient(circle at 10% 20%, #FFCB5E30 0%, transparent 64%),
+    radial-gradient(circle at 90% 15%, #FFB05422 0%, transparent 64%),
+    radial-gradient(circle at 80% 80%, #FFD98A28 0%, transparent 64%),
+    radial-gradient(circle at 20% 85%, #FFC15e24 0%, transparent 64%);
   background-attachment: fixed;
 }
 
@@ -181,10 +181,10 @@ body {
 
 .bg-blobs { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .blob { position: absolute; border-radius: 50%; filter: blur(8px); }
-.blob.b1 { width: 520px; height: 520px; top: -180px; left: -140px; background: radial-gradient(circle, #FFCB5E66, transparent 64%); }
-.blob.b2 { width: 560px; height: 560px; top: -120px; right: -200px; background: radial-gradient(circle, #FFB05444, transparent 64%); }
-.blob.b3 { width: 520px; height: 520px; top: 880px; left: -180px; background: radial-gradient(circle, #FFD98A55, transparent 64%); }
-.blob.b4 { width: 560px; height: 560px; bottom: -200px; right: -160px; background: radial-gradient(circle, #FFC15e4d, transparent 64%); }
+.blob.b1 { width: 520px; height: 520px; top: -180px; left: -140px; background: radial-gradient(circle, #FFCB5E30, transparent 64%); }
+.blob.b2 { width: 560px; height: 560px; top: -120px; right: -200px; background: radial-gradient(circle, #FFB05422, transparent 64%); }
+.blob.b3 { width: 520px; height: 520px; top: 880px; left: -180px; background: radial-gradient(circle, #FFD98A28, transparent 64%); }
+.blob.b4 { width: 560px; height: 560px; bottom: -200px; right: -160px; background: radial-gradient(circle, #FFC15e24, transparent 64%); }
 
 .wrap { position: relative; z-index: 1; }
 .container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }

@@ -14,19 +14,19 @@ function BackgroundOrbs() {
         },
         b1: {
             width: 340, height: 340, top: -120, left: -100,
-            background: 'radial-gradient(circle, #FFCB5E66, transparent 64%)',
+            background: 'radial-gradient(circle, #FFCB5E30, transparent 64%)',
         },
         b2: {
             width: 360, height: 360, top: -80, right: -130,
-            background: 'radial-gradient(circle, #FFB05444, transparent 64%)',
+            background: 'radial-gradient(circle, #FFB05422, transparent 64%)',
         },
         b3: {
             width: 340, height: 340, top: 600, left: -120,
-            background: 'radial-gradient(circle, #FFD98A55, transparent 64%)',
+            background: 'radial-gradient(circle, #FFD98A28, transparent 64%)',
         },
         b4: {
             width: 360, height: 360, bottom: -130, right: -110,
-            background: 'radial-gradient(circle, #FFC15e4d, transparent 64%)',
+            background: 'radial-gradient(circle, #FFC15e24, transparent 64%)',
         },
     };
 
