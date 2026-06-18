@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import BackgroundOrbs from './bg';
 
@@ -9,6 +9,7 @@ export default function SetPassword() {
   const [done,     setDone]       = useState(false);
   const [error,    setError]      = useState('');
   const [ready,    setReady]      = useState(false);
+  const [countdown, setCountdown] = useState(5);
 
   // Supabase puts the session tokens in the URL hash after redirect
   useEffect(() => {
@@ -46,6 +47,18 @@ export default function SetPassword() {
     }
 
     setDone(true);
+    // Sign out so the invite session can't be reused on reload
+    await supabase.auth.signOut();
+    // Redirect to home after countdown
+    let n = 5;
+    const timer = setInterval(() => {
+      n -= 1;
+      setCountdown(n);
+      if (n <= 0) {
+        clearInterval(timer);
+        window.location.href = '/';
+      }
+    }, 1000);
   };
 
   return (
@@ -81,6 +94,7 @@ export default function SetPassword() {
             </div>
             <h2 className="font-display font-bold text-xl text-[var(--ink)]">Password Set!</h2>
             <p className="text-sm text-[var(--mut)] font-semibold">You can now log in to the Shramik hirer app.</p>
+            <p className="text-xs text-[var(--mut)]">Redirecting in {countdown}s…</p>
           </div>
         ) : !ready ? (
           <div className="text-center py-8">
