@@ -190,34 +190,36 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     setErrors({});
 
     try {
-      // 1. Insert into labourers table first to get the DB-generated id
-      setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
+      const phone = formData.phone.trim();
       const [skill1, skill2, skill3] = formData.skills;
 
-      const { data: { user } } = await supabase.auth.getUser();
-      console.log("USER:", user);
+      // 1. Upload files first (phone is known, no DB round-trip needed)
+      setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
+      const photoUrl = await uploadFile(photoFile, 'laborprofile', phone);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log("SESSION:", session);
+      setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
+      const govIdUrl = await uploadFile(govIdFile, 'laborgovid', phone);
 
-      console.log("Before insert");
+      // 2. Insert everything in one shot — no UPDATE needed
+      setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
       const { error: insertError } = await supabase
         .from('labourers')
         .insert({
-          full_name:        formData.name.trim(),
-          mobile_no:        formData.phone.trim(),
-          date_of_birth:    formData.dob,
-          gender:           formData.gender,
-          skill_1:          skill1,
-          skill_2:          skill2 ?? null,
-          skill_3:          skill3 ?? null,
-          experience_level: formData.experience,
-          daily_wage:       formData.dailyWage,
-          city:             formData.city.trim(),
-          state:            formData.state.trim(),
-          status:           'pending',
+          full_name:          formData.name.trim(),
+          mobile_no:          phone,
+          date_of_birth:      formData.dob,
+          gender:             formData.gender,
+          skill_1:            skill1,
+          skill_2:            skill2 ?? null,
+          skill_3:            skill3 ?? null,
+          experience_level:   formData.experience,
+          daily_wage:         formData.dailyWage,
+          city:               formData.city.trim(),
+          state:              formData.state.trim(),
+          status:             'pending',
+          photo_url:          photoUrl,
+          government_id_url:  govIdUrl,
         });
-      console.log("Insert result", insertError);
 
       if (insertError) {
         if (insertError.code === '23505' && insertError.message.includes('mobile_no')) {
@@ -228,23 +230,6 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
         }
         throw new Error(insertError.message);
       }
-      // 2. Upload profile photo named by phone (unique identifier available without select)
-      setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
-      const photoUrl = await uploadFile(photoFile, 'laborprofile', formData.phone.trim());
-
-      // 3. Upload government ID named by phone
-      setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
-      const govIdUrl = await uploadFile(govIdFile, 'laborgovid', formData.phone.trim());
-
-      // 4. Update row with file URLs
-      console.log("Before update");
-      const { error: updateError } = await supabase
-        .from('labourers')
-        .update({ photo_url: photoUrl, government_id_url: govIdUrl })
-        .eq('mobile_no', formData.phone.trim());
-      console.log("Update result", updateError);
-
-      if (updateError) throw new Error(updateError.message);
 
       setIsSuccess(true);
       setTimeout(() => {
