@@ -118,13 +118,13 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
               </p>
               <ul className="flex flex-col gap-4">
                 <li className="flex items-center gap-3 text-[var(--ink)] font-semibold text-sm md:text-base">
-                  <div className="w-6 h-6 rounded-full bg-[var(--accent)] flex items-center justify-center text-white flex-shrink-0">
+                  <div className="w-6 h-6 rounded-full bg-[var(--ink)] flex items-center justify-center text-white flex-shrink-0">
                     <Check className="w-3.5 h-3.5 stroke-[3]" />
                   </div>
                   <span>{t.laborerBullet1}</span>
                 </li>
                 <li className="flex items-center gap-3 text-[var(--ink)] font-semibold text-sm md:text-base">
-                  <div className="w-6 h-6 rounded-full bg-[var(--accent)] flex items-center justify-center text-white flex-shrink-0">
+                  <div className="w-6 h-6 rounded-full bg-[var(--ink)] flex items-center justify-center text-white flex-shrink-0">
                     <Wallet className="w-3.5 h-3.5" />
                   </div>
                   <span>{t.laborerBullet2}</span>
