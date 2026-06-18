@@ -27,10 +27,12 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
     mobile: '',
     email: '',
     address: '',
+    pincode: '',
     city: '',
     state: '',
-    entityType: 'individual', // 'individual' or 'company'
-    gstin: '',
+    entityType: 'Individual',
+    companyName: '',
+    gstNumber: '',
     agreeTerms: false,
   });
 
@@ -56,18 +58,20 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
     }
   };
 
+  const isIndividual = formData.entityType === 'Individual';
+
   const setEntityType = (type) => {
     setFormData(prev => ({
       ...prev,
       entityType: type,
-      gstin: type === 'individual' ? '' : prev.gstin,
+      companyName: type === 'Individual' ? '' : prev.companyName,
+      gstNumber: type === 'Individual' ? '' : prev.gstNumber,
     }));
-    // Clear aadhaar if switching to company
-    if (type === 'company') {
+    if (type !== 'Individual') {
       setAadhaarFile(null);
       setAadhaarName('');
     }
-    setErrors(prev => ({ ...prev, entityType: '', gstin: '', aadhaar: '' }));
+    setErrors(prev => ({ ...prev, entityType: '', gstNumber: '', aadhaar: '', companyName: '' }));
   };
 
   const validate = () => {
@@ -84,17 +88,15 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
       e.email = L('ईमेल आवश्यक है', 'Email is required');
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       e.email = L('कृपया वैध ईमेल दर्ज करें', 'Please enter a valid email address');
-    if (!formData.address.trim())
-      e.address = L('पता आवश्यक है', 'Address is required');
     if (!formData.city.trim())
       e.city = L('शहर आवश्यक है', 'City is required');
     if (!formData.state.trim())
       e.state = L('राज्य आवश्यक है', 'State is required');
-    if (formData.entityType === 'company' && !formData.gstin.trim())
-      e.gstin = L('GSTIN आवश्यक है', 'GSTIN is required');
-    else if (formData.entityType === 'company' && formData.gstin.trim() && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstin.trim().toUpperCase()))
-      e.gstin = L('कृपया वैध GSTIN दर्ज करें', 'Please enter a valid GSTIN');
-    if (formData.entityType === 'individual' && !aadhaarFile)
+    if (!isIndividual && !formData.companyName.trim())
+      e.companyName = L('संस्था का नाम आवश्यक है', 'Company name is required');
+    if (!isIndividual && formData.gstNumber.trim() && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstNumber.trim().toUpperCase()))
+      e.gstNumber = L('कृपया वैध GSTIN दर्ज करें', 'Please enter a valid GSTIN');
+    if (isIndividual && !aadhaarFile)
       e.aadhaar = L('आधार कार्ड अपलोड करना अनिवार्य है', 'Aadhaar card upload is required');
     if (!formData.agreeTerms)
       e.agreeTerms = L('आपको शर्तों से सहमत होना होगा', 'You must agree to the terms');
@@ -116,9 +118,12 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
     try {
       const phone = formData.mobile.trim();
 
-      // 1. Upload Aadhaar
-      setSubmitStage(L('आधार अपलोड हो रहा है…', 'Uploading Aadhaar…'));
-      const aadhaarUrl = await uploadFile(aadhaarFile, 'hireraadhaar', phone);
+      // 1. Upload Aadhaar only for Individual
+      let aadharUrl = null;
+      if (isIndividual) {
+        setSubmitStage(L('आधार अपलोड हो रहा है…', 'Uploading Aadhaar…'));
+        aadharUrl = await uploadFile(aadhaarFile, 'hireraadhaar', phone);
+      }
 
       // 2. Insert hirer record
       setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
@@ -128,22 +133,24 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
           first_name:   formData.firstName.trim(),
           last_name:    formData.lastName.trim(),
           mobile_no:    phone,
-          email:        formData.email.trim().toLowerCase(),
-          address:      formData.address.trim(),
+          email:        formData.email.trim().toLowerCase() || null,
+          address:      formData.address.trim() || null,
+          pincode:      formData.pincode.trim() || null,
           city:         formData.city.trim(),
           state:        formData.state.trim(),
           entity_type:  formData.entityType,
-          gstin:        formData.entityType === 'company' ? formData.gstin.trim().toUpperCase() : null,
-          aadhaar_url:  aadhaarUrl,
+          company_name: !isIndividual ? formData.companyName.trim() : null,
+          gst_number:   !isIndividual && formData.gstNumber.trim() ? formData.gstNumber.trim().toUpperCase() : null,
+          aadhar_url:   aadharUrl,
           status:       'pending',
         });
 
       if (insertError) {
-        if (insertError.code === '23505' && insertError.message.includes('mobile_no')) {
-          throw new Error(L(
-            'यह मोबाइल नंबर पहले से पंजीकृत है।',
-            'This mobile number is already registered.'
-          ));
+        if (insertError.code === '23505') {
+          if (insertError.message.includes('mobile_no'))
+            throw new Error(L('यह मोबाइल नंबर पहले से पंजीकृत है।', 'This mobile number is already registered.'));
+          if (insertError.message.includes('email'))
+            throw new Error(L('यह ईमेल पहले से पंजीकृत है।', 'This email is already registered.'));
         }
         throw new Error(insertError.message);
       }
@@ -266,20 +273,21 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
 
             {/* ── Address ────────────────────────────────── */}
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.address}</Label>
+              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {L('पता (वैकल्पिक)', 'Address (Optional)')}
+              </Label>
               <textarea
                 name="address"
                 placeholder={L('पूरा पता दर्ज करें', 'Enter full address')}
                 value={formData.address}
                 onChange={handleChange}
                 rows={2}
-                className={`glass-input border rounded-xl px-4 py-3 focus:outline-none resize-none text-sm font-semibold ${errors.address ? 'border-red-400' : ''}`}
+                className="glass-input border rounded-xl px-4 py-3 focus:outline-none resize-none text-sm font-semibold"
                 style={{ fontFamily: 'var(--body)' }}
               />
-              {errors.address && <span className="text-xs text-red-500">{errors.address}</span>}
             </div>
 
-            {/* ── City + State ────────────────────────────── */}
+            {/* ── City + State + Pincode ───────────────────── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.city}</Label>
@@ -311,61 +319,96 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
               </div>
             </div>
 
+            {/* ── Pincode ─────────────────────────────────── */}
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {L('पिनकोड (वैकल्पिक)', 'Pincode (Optional)')}
+              </Label>
+              <Input
+                type="text"
+                name="pincode"
+                placeholder={L('जैसे: 110001', 'e.g. 110001')}
+                value={formData.pincode}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 6);
+                  setFormData(prev => ({ ...prev, pincode: val }));
+                }}
+                maxLength={6}
+                className="glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none w-40"
+              />
+            </div>
+
             {/* ── Entity Type ────────────────────────────── */}
             <div className="flex flex-col gap-2">
               <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.entityType}</Label>
-              <div className="flex gap-3 mt-1">
-                <button
-                  type="button"
-                  onClick={() => setEntityType('individual')}
-                  className={`flex-1 flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer ${
-                    formData.entityType === 'individual'
-                      ? 'border-[var(--accent)] bg-[rgba(201,29,94,0.06)] text-[var(--accent)] shadow-sm'
-                      : 'border-slate-200 bg-white/60 text-slate-600 hover:border-slate-300'
-                  }`}
-                >
-                  <User className="w-4.5 h-4.5" />
-                  <span>{t.entityIndividual}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEntityType('company')}
-                  className={`flex-1 flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer ${
-                    formData.entityType === 'company'
-                      ? 'border-[var(--accent)] bg-[rgba(201,29,94,0.06)] text-[var(--accent)] shadow-sm'
-                      : 'border-slate-200 bg-white/60 text-slate-600 hover:border-slate-300'
-                  }`}
-                >
-                  <Building2 className="w-4.5 h-4.5" />
-                  <span>{t.entityCompany}</span>
-                </button>
+              <div className="grid grid-cols-2 gap-2.5 mt-1">
+                {[
+                  { value: 'Individual', icon: <User className="w-4 h-4" />, hi: 'व्यक्तिगत', en: 'Individual' },
+                  { value: 'Contractor', icon: <Building2 className="w-4 h-4" />, hi: 'ठेकेदार', en: 'Contractor' },
+                  { value: 'Builder',    icon: <Building2 className="w-4 h-4" />, hi: 'बिल्डर', en: 'Builder' },
+                  { value: 'Company',   icon: <Building2 className="w-4 h-4" />, hi: 'कंपनी', en: 'Company' },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setEntityType(opt.value)}
+                    className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer ${
+                      formData.entityType === opt.value
+                        ? 'border-[var(--accent)] bg-[rgba(201,29,94,0.06)] text-[var(--accent)] shadow-sm'
+                        : 'border-slate-200 bg-white/60 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    {opt.icon}
+                    <span>{language === 'hi' ? opt.hi : opt.en}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* ── GSTIN (conditional — only for Company) ── */}
-            {formData.entityType === 'company' && (
+            {/* ── Company Name (non-Individual) ──────────── */}
+            {!isIndividual && (
               <div className="flex flex-col gap-1.5 animate-[fadeSlideIn_0.3s_ease-out]">
-                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.gstin}</Label>
+                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  {L('संस्था / कंपनी का नाम', 'Company / Firm Name')}
+                </Label>
                 <Input
                   type="text"
-                  name="gstin"
+                  name="companyName"
+                  placeholder={L('संस्था का नाम दर्ज करें', 'Enter company name')}
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.companyName ? 'border-red-400' : ''}`}
+                />
+                {errors.companyName && <span className="text-xs text-red-500">{errors.companyName}</span>}
+              </div>
+            )}
+
+            {/* ── GST Number (optional, non-Individual) ─── */}
+            {!isIndividual && (
+              <div className="flex flex-col gap-1.5 animate-[fadeSlideIn_0.3s_ease-out]">
+                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  {L('GST नंबर (वैकल्पिक)', 'GST Number (Optional)')}
+                </Label>
+                <Input
+                  type="text"
+                  name="gstNumber"
                   placeholder={L('जैसे: 22AAAAA0000A1Z5', 'e.g. 22AAAAA0000A1Z5')}
-                  value={formData.gstin}
+                  value={formData.gstNumber}
                   onChange={(e) => {
                     const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                    setFormData(prev => ({ ...prev, gstin: val }));
-                    if (errors.gstin) setErrors(prev => ({ ...prev, gstin: '' }));
+                    setFormData(prev => ({ ...prev, gstNumber: val }));
+                    if (errors.gstNumber) setErrors(prev => ({ ...prev, gstNumber: '' }));
                   }}
                   maxLength={15}
-                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none font-mono tracking-wider ${errors.gstin ? 'border-red-400' : ''}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none font-mono tracking-wider ${errors.gstNumber ? 'border-red-400' : ''}`}
                 />
-                <p className="text-[10px] text-slate-400 font-semibold">{L('15-अंकों का GSTIN नंबर', '15-character GSTIN number')}</p>
-                {errors.gstin && <span className="text-xs text-red-500">{errors.gstin}</span>}
+                <p className="text-[10px] text-slate-400 font-semibold">{L('15-अंकों का GST नंबर', '15-character GST number')}</p>
+                {errors.gstNumber && <span className="text-xs text-red-500">{errors.gstNumber}</span>}
               </div>
             )}
 
             {/* ── Aadhaar Card Upload (Individual only) ──── */}
-            {formData.entityType === 'individual' && (
+            {isIndividual && (
             <div className="flex flex-col gap-2 animate-[fadeSlideIn_0.3s_ease-out]">
               <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 {L('आधार कार्ड अपलोड करें', 'Upload Aadhaar Card')}
