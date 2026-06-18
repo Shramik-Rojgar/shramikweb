@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUpPage';
 import AboutUsPage from './components/AboutUsPage';
+import SetPassword from './components/SetPassword';
 import './App.css';
 
 function App() {
+  const isSetPassword = window.location.pathname === '/set-password';
+
   const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'signup' | 'about'
   const [aud, setAud] = useState('hire'); // 'hire' | 'work'
   const [initialStep, setInitialStep] = useState('choose');
@@ -14,6 +17,8 @@ function App() {
     setCurrentPage(page);
     setInitialStep(step);
   };
+
+  if (isSetPassword) return <SetPassword />;
 
   return (
     <div className="app-root">
