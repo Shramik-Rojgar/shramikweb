@@ -3,10 +3,9 @@ function BackgroundOrbs() {
         bgBlobs: {
             position: 'fixed',
             inset: 0,
-            zIndex: -1,
+            zIndex: 0,
             pointerEvents: 'none',
             overflow: 'hidden',
-            background: '#FFFAEF',
         },
         blobBase: {
             position: 'absolute',
