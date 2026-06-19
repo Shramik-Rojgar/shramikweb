@@ -23,6 +23,7 @@ import { Label } from '@/components/ui/label';
 import { translations } from '../lib/translations';
 import { supabase } from '../lib/supabase';
 import { uploadFile } from '../lib/storage';
+import { usePageMeta } from '../lib/usePageMeta';
 
 // ── Icon helpers ────────────────────────────────────────────────────────────
 const I = {
@@ -109,6 +110,12 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
 
   const t = translations[language].laborer;
   const L = (hi, en) => language === 'hi' ? hi : en;
+
+  usePageMeta({
+    title: 'Worker Registration | Shramik — Find Daily Wage Jobs',
+    description: 'Register as a skilled worker on Shramik. Get verified, find daily wage jobs near you as a mason, carpenter, plumber, electrician, painter, welder and more.',
+    keywords: 'worker registration shramik, daily wage jobs, skilled labour registration, mason jobs, carpenter jobs, plumber jobs, electrician jobs india, construction work near me',
+  });
 
   const othersSelected = formData.skills.includes('Others');
 

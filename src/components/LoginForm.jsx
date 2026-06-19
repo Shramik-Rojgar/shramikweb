@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { translations } from '../lib/translations';
+import { usePageMeta } from '../lib/usePageMeta';
 
 export default function LoginForm({ onNavigate, onBack, language = 'hi', onLanguageChange }) {
   const [formData, setFormData] = useState({
@@ -19,6 +20,12 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
   const [isSuccess, setIsSuccess] = useState(false);
 
   const t = translations[language].login;
+
+  usePageMeta({
+    title: 'Login | Shramik — Access Your Account',
+    description: 'Log in to your Shramik account to manage your worker or hirer profile, track applications, and connect with opportunities across India.',
+    keywords: 'shramik login, worker login, hirer login, shramik account, labour platform login india',
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { usePageMeta } from '../lib/usePageMeta';
 import BackgroundOrbs from './bg';
 import Header from './Header';
 import Footer from './Footer';
@@ -6,6 +7,12 @@ import { ShieldCheck, Users, Heart, MapPin, PhoneCall, Check, Award, Briefcase, 
 
 export default function AboutUsPage({ onNavigate, language = 'hi', onLanguageChange, aud, setAud }) {
   const isHi = language === 'hi';
+
+  usePageMeta({
+    title: 'About Us | Shramik — Building Dignity Through Work',
+    description: 'Learn about Shramik\'s mission to empower India\'s blue-collar workforce with verified identities, fair wages, and dignified work opportunities across the country.',
+    keywords: 'about shramik, shramik mission, blue collar workforce india, labour dignity, skilled workers platform, indian construction workers, shramik vision',
+  });
 
   const t = {
     title: isHi ? 'श्रमिक के बारे में' : 'About SHRAMIK',

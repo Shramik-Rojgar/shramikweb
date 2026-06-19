@@ -17,6 +17,7 @@ import LaborerSignUpForm from './LaborerSignUpForm';
 import HirerSignUpForm from './HirerSignUpForm';
 import LoginForm from './LoginForm';
 import { translations } from '../lib/translations';
+import { usePageMeta } from '../lib/usePageMeta';
 
 export default function SignUpPage({ onNavigate, initialStep = 'choose', language = 'hi', onLanguageChange, aud, setAud }) {
   const [step, setStep] = useState(initialStep);
@@ -27,6 +28,12 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
   }, [initialStep]);
 
   const t = translations[language].signup;
+
+  usePageMeta({
+    title: 'Join Shramik | Register as Worker or Hirer',
+    description: 'Sign up on Shramik as a skilled worker looking for daily wage jobs, or as a hirer looking for verified blue-collar labour across India.',
+    keywords: 'shramik register, join shramik, worker registration india, hire labour india, blue collar signup, daily wage job registration',
+  });
 
   // Reusable Login header action link for the 'choose' step
   const loginAction = (

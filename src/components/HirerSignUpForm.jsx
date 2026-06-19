@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { translations } from '../lib/translations';
 import { supabase } from '../lib/supabase';
 import { uploadFile } from '../lib/storage';
+import { usePageMeta } from '../lib/usePageMeta';
 
 const INDIAN_STATES = [
   'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
@@ -47,6 +48,12 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
 
   const t = translations[language].hirer;
   const L = (hi, en) => language === 'hi' ? hi : en;
+
+  usePageMeta({
+    title: 'Hire Verified Workers | Shramik — Post Jobs, Find Labour',
+    description: 'Register as a hirer on Shramik to find verified, skilled blue-collar workers for construction, home services and more. Trusted by contractors and builders across India.',
+    keywords: 'hire labour india, find workers india, contractor registration shramik, hire mason carpenter plumber, construction workers, blue collar hiring platform india',
+  });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

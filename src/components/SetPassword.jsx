@@ -11,6 +11,7 @@ export default function SetPassword() {
   const [ready,    setReady]      = useState(false);
   const [countdown, setCountdown] = useState(5);
 
+
   // Supabase puts the session tokens in the URL hash after redirect
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {

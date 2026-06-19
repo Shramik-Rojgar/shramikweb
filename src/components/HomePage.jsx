@@ -3,6 +3,7 @@ import BackgroundOrbs from './bg';
 import Header from './Header';
 import Footer from './Footer';
 import { translations } from '../lib/translations';
+import { usePageMeta } from '../lib/usePageMeta';
 import { ArrowRight, Users, HardHat } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -78,6 +79,12 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
   const [faqTab, setFaqTab] = useState('hire'); // 'hire' | 'work'
 
   const L = (o) => (o ? (language === 'hi' ? o.hi : o.en) : '');
+
+  usePageMeta({
+    title: 'Shramik | India\'s Blue-Collar Labour Marketplace',
+    description: 'Shramik connects verified skilled workers — masons, electricians, plumbers, carpenters and more — with trusted hirers across India. Find work or hire labour today.',
+    keywords: 'shramik, blue collar jobs india, skilled labour hire, mason, electrician, plumber, carpenter, daily wage workers, construction workers india, labour marketplace',
+  });
 
   const tHire = translations[language].prelaunch.hire;
   const tWork = translations[language].prelaunch.work;
