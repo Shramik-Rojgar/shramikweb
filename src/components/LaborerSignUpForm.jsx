@@ -14,6 +14,7 @@ import {
   Minus,
   Loader2,
   AlertCircle,
+  PhoneCall,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -37,6 +38,7 @@ const I = {
   tile:      'M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z',
   hardhat:   'M3 18h18 M5 18v-2a7 7 0 0114 0v2 M10 8.5V5.5h4v3',
   home:      'M4 11l8-7 8 7 M6 10v9h12v-9 M10 19v-5h4v5',
+  more:      'M12 5h.01 M12 12h.01 M12 19h.01',
 };
 
 function Ic({ d, size = 22, color = 'currentColor', sw = 2, fill = 'none' }) {
@@ -60,14 +62,16 @@ const SKILLS = [
   { key: 'Site helper',  ic: 'hardhat', hi: 'निर्माण सहायक',       en: 'Site helper' },
   { key: 'Labourer',     ic: 'people',  hi: 'मजदूर',              en: 'Labourer' },
   { key: 'Domestic help',ic: 'home',    hi: 'घरेलू सहायक',        en: 'Domestic help' },
+  { key: 'Others',       ic: 'more',    hi: 'अन्य',               en: 'Others' },
 ];
 
-// Maps to DB enum values
+// Experience: 1–15 + 15+ (DB stores the number string, display adds Year/Years)
 const EXPERIENCE_OPTIONS = [
-  { id: 'Fresher',    hi: 'नया (फ्रेशर)',    en: 'Fresher' },
-  { id: '1-3 Years',  hi: '१–३ साल',         en: '1–3 Years' },
-  { id: '3-5 Years',  hi: '३–५ साल',         en: '3–5 Years' },
-  { id: '5+ Years',   hi: '५+ साल',           en: '5+ Years' },
+  ...Array.from({ length: 15 }, (_, i) => ({
+    id: String(i + 1),
+    label: `${i + 1} ${i === 0 ? 'Year' : 'Years'}`,
+  })),
+  { id: '15+', label: '15+ Years' },
 ];
 
 const GENDER_OPTIONS = [
@@ -82,26 +86,31 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     phone:       '',
     dob:         '',
     gender:      '',
-    skills:      [],   // max 3 — mapped to skill_1, skill_2, skill_3
+    skills:      [],
     experience:  '',
     dailyWage:   600,
     city:        '',
     state:       '',
   });
 
-  const [photoFile,   setPhotoFile]   = useState(null);
-  const [photoPreview,setPhotoPreview]= useState(null);
-  const [govIdFile,   setGovIdFile]   = useState(null);
-  const [govIdName,   setGovIdName]   = useState('');
+  const [otherSkill,   setOtherSkill]   = useState('');
+  const [wageInput,    setWageInput]    = useState('600');
 
-  const [errors,      setErrors]      = useState({});
-  const [isSubmitting,setIsSubmitting]= useState(false);
-  const [submitStage, setSubmitStage] = useState(''); // progress label
-  const [isSuccess,   setIsSuccess]   = useState(false);
-  const [isLocating,  setIsLocating]  = useState(false);
+  const [photoFile,    setPhotoFile]    = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [govIdFile,    setGovIdFile]    = useState(null);
+  const [govIdName,    setGovIdName]    = useState('');
+
+  const [errors,       setErrors]       = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStage,  setSubmitStage]  = useState('');
+  const [isSuccess,    setIsSuccess]    = useState(false);
+  const [isDuplicate,  setIsDuplicate]  = useState(false);
 
   const t = translations[language].laborer;
   const L = (hi, en) => language === 'hi' ? hi : en;
+
+  const othersSelected = formData.skills.includes('Others');
 
   // ── Field helpers ────────────────────────────────────────
   const handleChange = (e) => {
@@ -134,47 +143,57 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
         return p;
       }
       const skills = exists ? p.skills.filter(k => k !== key) : [...p.skills, key];
+      if (key === 'Others' && exists) setOtherSkill('');
       setErrors(e => ({ ...e, skills: '' }));
       return { ...p, skills };
     });
   };
 
+  // Wage stepper — keep input in sync
   const adjustRate = (amount) => {
-    setFormData(p => ({ ...p, dailyWage: Math.max(300, p.dailyWage + amount) }));
+    setFormData(p => {
+      const next = Math.max(300, p.dailyWage + amount);
+      setWageInput(String(next));
+      return { ...p, dailyWage: next };
+    });
   };
 
-  const detectLocation = () => {
-    setIsLocating(true);
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        () => {
-          setIsLocating(false);
-        },
-        () => { setIsLocating(false); }
-      );
-    } else {
-      setIsLocating(false);
-    }
+  const handleWageInput = (e) => {
+    const raw = e.target.value.replace(/\D/g, '');
+    setWageInput(raw);
+    const num = parseInt(raw, 10);
+    if (!isNaN(num)) setFormData(p => ({ ...p, dailyWage: num }));
+  };
+
+  const handleWageBlur = () => {
+    const num = Math.max(300, parseInt(wageInput, 10) || 300);
+    setFormData(p => ({ ...p, dailyWage: num }));
+    setWageInput(String(num));
   };
 
   // ── Validation ───────────────────────────────────────────
   const validate = () => {
     const e = {};
-    if (!formData.name.trim())  e.name     = L('पूरा नाम आवश्यक है', 'Full name is required');
-    if (!formData.phone.trim()) e.phone    = L('मोबाइल नंबर आवश्यक है', 'Mobile number is required');
+    if (!formData.name.trim())  e.name       = L('पूरा नाम आवश्यक है', 'Full name is required');
+    if (!formData.phone.trim()) e.phone      = L('मोबाइल नंबर आवश्यक है', 'Mobile number is required');
     else if (!/^\d{10}$/.test(formData.phone))
-                                 e.phone    = L('१०-अंकों का नंबर दर्ज करें', 'Enter a valid 10-digit mobile number');
-    if (!formData.dob)           e.dob      = L('जन्म तिथि आवश्यक है', 'Date of birth is required');
-    if (!formData.gender)        e.gender   = L('लिंग चुनें', 'Select gender');
-    if (!photoFile)              e.photo    = L('प्रोफ़ाइल फ़ोटो अनिवार्य है', 'Profile photo is required');
-    if (!govIdFile)              e.govId    = L('सरकारी ID अनिवार्य है', 'Government ID is required');
+                                 e.phone      = L('१०-अंकों का नंबर दर्ज करें', 'Enter a valid 10-digit mobile number');
+    if (!formData.dob)           e.dob        = L('जन्म तिथि आवश्यक है', 'Date of birth is required');
+    if (!formData.gender)        e.gender     = L('लिंग चुनें', 'Select gender');
+    if (!photoFile)              e.photo      = L('प्रोफ़ाइल फ़ोटो अनिवार्य है', 'Profile photo is required');
+    if (!govIdFile)              e.govId      = L('सरकारी ID अनिवार्य है', 'Government ID is required');
     if (formData.skills.length === 0)
-                                 e.skills   = L('कम से कम एक हुनर चुनें', 'Select at least one skill');
+                                 e.skills     = L('कम से कम एक हुनर चुनें', 'Select at least one skill');
+    if (othersSelected && !otherSkill.trim())
+                                 e.otherSkill = L('कृपया अपना हुनर लिखें', 'Please enter your skill');
     if (!formData.experience)    e.experience = L('अनुभव चुनें', 'Select experience level');
-    if (!formData.city.trim())   e.city     = L('शहर आवश्यक है', 'City is required');
-    if (!formData.state.trim())  e.state    = L('राज्य आवश्यक है', 'State is required');
+    if (!formData.city.trim())   e.city       = L('शहर आवश्यक है', 'City is required');
+    if (!formData.state.trim())  e.state      = L('राज्य आवश्यक है', 'State is required');
     return e;
   };
+
+  // Resolve actual skill values (replace 'Others' with the typed value)
+  const resolveSkills = () => formData.skills.map(k => k === 'Others' ? otherSkill.trim() : k);
 
   // ── Submit ───────────────────────────────────────────────
   const handleSubmit = async (e) => {
@@ -191,16 +210,27 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
 
     try {
       const phone = formData.phone.trim();
-      const [skill1, skill2, skill3] = formData.skills;
+      const [skill1, skill2, skill3] = resolveSkills();
 
-      // 1. Upload files first (phone is known, no DB round-trip needed)
+      // 0. Pre-check for duplicate mobile before uploading anything
+      setSubmitStage(L('जाँच हो रही है…', 'Checking…'));
+      const { data: existing } = await supabase
+        .from('labourers')
+        .select('id')
+        .eq('mobile_no', phone)
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        setIsDuplicate(true);
+        return;
+      }
+
       setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
       const photoUrl = await uploadFile(photoFile, 'laborprofile', phone);
 
       setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
       const govIdUrl = await uploadFile(govIdFile, 'laborgovid', phone);
 
-      // 2. Insert everything in one shot — no UPDATE needed
       setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
       const { error: insertError } = await supabase
         .from('labourers')
@@ -223,10 +253,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
 
       if (insertError) {
         if (insertError.code === '23505' && insertError.message.includes('mobile_no')) {
-          throw new Error(L(
-            'आपका नंबर पहले से पंजीकृत है। आपका आवेदन समीक्षाधीन है।',
-            'You have already registered. Your account is under review.'
-          ));
+          setIsDuplicate(true);
+          return;
         }
         throw new Error(insertError.message);
       }
@@ -245,6 +273,83 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       setSubmitStage('');
     }
   };
+
+  // ── Already registered card ──────────────────────────────
+  if (isDuplicate) {
+    return (
+      <div className="min-h-screen text-[#1C2733] font-sans flex flex-col justify-between">
+        <Header theme="light" onNavigate={onNavigate} onBack={onBack} language={language} onLanguageChange={onLanguageChange} />
+        <BackgroundOrbs />
+        <main className="flex-grow flex items-center justify-center px-6">
+          <div
+            className="w-full max-w-sm rounded-3xl p-8 flex flex-col items-center text-center gap-5"
+            style={{
+              background: 'rgba(255,255,255,0.78)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.78)',
+              boxShadow: '0 16px 48px rgba(20,16,28,0.08)',
+            }}
+          >
+            {/* Icon */}
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg,#FF8A1E 0%,#E5397B 100%)' }}
+            >
+              <ShieldCheck size={28} color="#fff" strokeWidth={2} />
+            </div>
+
+            {/* Text */}
+            <div className="flex flex-col gap-2">
+              <h2 className="font-display font-black text-xl text-[var(--ink)]">
+                {L('आप पहले से पंजीकृत हैं!', 'Already Registered!')}
+              </h2>
+              <p className="text-sm font-semibold text-[var(--mut)] leading-relaxed">
+                {L(
+                  'आपका मोबाइल नंबर पहले से हमारे सिस्टम में है। आपका आवेदन समीक्षाधीन है — हम जल्द ही आपको सूचित करेंगे।',
+                  'Your mobile number is already in our system. Your application is under review — we\'ll notify you shortly.'
+                )}
+              </p>
+            </div>
+
+            {/* Status pill */}
+            <div className="flex items-center gap-2 bg-[rgba(255,138,30,0.10)] border border-[rgba(255,138,30,0.2)] rounded-full px-4 py-2">
+              <span className="w-2 h-2 rounded-full bg-[#FF8A1E] animate-pulse inline-block" />
+              <span className="text-xs font-bold text-[#FF8A1E] uppercase tracking-wider">
+                {L('समीक्षाधीन', 'Under Review')}
+              </span>
+            </div>
+
+            {/* Support note */}
+            <div className="flex items-center gap-2.5 text-[var(--mut)]">
+              <PhoneCall size={14} strokeWidth={2} />
+              <p className="text-xs font-semibold">
+                {L('सहायता के लिए हमसे संपर्क करें', 'Contact us for support')}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col gap-2.5 w-full mt-1">
+              <button
+                onClick={() => onNavigate('home')}
+                className="w-full py-3 rounded-2xl text-white font-bold text-sm cursor-pointer transition-opacity hover:opacity-90"
+                style={{ background: 'var(--grad)' }}
+              >
+                {L('होम पर जाएं', 'Go to Home')}
+              </button>
+              <button
+                onClick={() => setIsDuplicate(false)}
+                className="w-full py-3 rounded-2xl text-[var(--mut)] font-semibold text-sm cursor-pointer transition-colors hover:text-[var(--ink)]"
+                style={{ background: 'rgba(20,16,28,0.04)', border: '1px solid rgba(20,16,28,0.08)' }}
+              >
+                {L('वापस जाएं', 'Go Back')}
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer theme="light" />
+      </div>
+    );
+  }
 
   // ── Success state ────────────────────────────────────────
   if (isSuccess) {
@@ -274,7 +379,6 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           <h2 className="text-3xl font-bold text-brand-grad mb-2 font-display">{t.title}</h2>
           <p className="text-slate-500 text-sm mb-8 font-semibold">{t.subtitle}</p>
 
-          {/* Global submit error */}
           {errors.submit && (
             <div className="flex items-start gap-3 bg-[rgba(201,29,94,0.08)] border border-[rgba(201,29,94,0.2)] rounded-2xl px-4 py-3 mb-6">
               <AlertCircle size={15} className="text-[var(--accent)] flex-shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -399,30 +503,36 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                   );
                 })}
               </div>
+              {/* Others text input */}
+              {othersSelected && (
+                <div className="mt-3">
+                  <Input
+                    type="text"
+                    value={otherSkill}
+                    onChange={e => { setOtherSkill(e.target.value); setErrors(p => ({ ...p, otherSkill: '' })); }}
+                    placeholder={L('अपना हुनर लिखें (जैसे: Scaffolding)', 'Enter your skill (e.g. Scaffolding)')}
+                    className={`glass-input h-11 border rounded-xl px-4 focus:outline-none text-sm ${errors.otherSkill ? 'border-red-400' : ''}`}
+                  />
+                  {errors.otherSkill && <span className="text-xs text-red-500 mt-1 block">{errors.otherSkill}</span>}
+                </div>
+              )}
               {errors.skills && <span className="text-xs text-red-500 mt-1">{errors.skills}</span>}
             </div>
 
             {/* ── Experience ─────────────────────────────── */}
             <div className="flex flex-col gap-2">
               <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.experienceLevel}</Label>
-              <div className="flex flex-wrap gap-2.5 mt-1">
-                {EXPERIENCE_OPTIONS.map((exp) => {
-                  const selected = formData.experience === exp.id;
-                  return (
-                    <button type="button" key={exp.id}
-                      onClick={() => {
-                        setFormData(p => ({ ...p, experience: exp.id }));
-                        setErrors(e => ({ ...e, experience: '' }));
-                      }}
-                      className={`py-2 px-4 rounded-xl border font-semibold text-xs md:text-sm transition-all duration-150 cursor-pointer ${
-                        selected ? 'bg-[#7A3BFF] border-transparent text-white shadow-sm' : 'glass-chip hover:border-slate-350 text-slate-700'
-                      }`}
-                    >
-                      {language === 'hi' ? exp.hi : exp.en}
-                    </button>
-                  );
-                })}
-              </div>
+              <select
+                name="experience"
+                value={formData.experience}
+                onChange={handleChange}
+                className={`glass-input h-12 border rounded-xl px-4 focus:outline-none bg-white/85 text-sm font-semibold cursor-pointer ${errors.experience ? 'border-red-400' : ''}`}
+              >
+                <option value="">{L('अनुभव चुनें', 'Select Experience')}</option>
+                {EXPERIENCE_OPTIONS.map(exp => (
+                  <option key={exp.id} value={exp.id}>{exp.label}</option>
+                ))}
+              </select>
               {errors.experience && <span className="text-xs text-red-500 mt-1">{errors.experience}</span>}
             </div>
 
@@ -437,9 +547,19 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
                 >
                   <Minus className="w-4 h-4 stroke-[3]" />
                 </Button>
-                <div className="min-w-28 text-center">
-                  <span className="text-2xl font-black text-ink font-display">₹{formData.dailyWage}</span>
-                  <span className="block text-[9px] text-slate-400 font-semibold">{t.wagePerDay}</span>
+                <div className="min-w-32 flex flex-col items-center">
+                  <div className="flex items-center gap-1">
+                    <span className="text-xl font-black text-ink font-display">₹</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={wageInput}
+                      onChange={handleWageInput}
+                      onBlur={handleWageBlur}
+                      className="w-20 text-center text-2xl font-black text-ink font-display bg-transparent border-none outline-none"
+                    />
+                  </div>
+                  <span className="text-[9px] text-slate-400 font-semibold">{t.wagePerDay}</span>
                 </div>
                 <Button type="button" onClick={() => adjustRate(50)} variant="outline" size="icon"
                   className="w-10 h-10 rounded-xl bg-white hover:bg-slate-100 flex items-center justify-center border border-slate-200 cursor-pointer"
@@ -498,4 +618,3 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
     </div>
   );
 }
-
