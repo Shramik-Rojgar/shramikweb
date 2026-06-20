@@ -7,10 +7,16 @@ import NotFoundPage from './components/NotFoundPage';
 import './App.css';
 
 const PATH_TO_PAGE = {
-  '/':            'home',
-  '/signup':      'signup',
-  '/about':       'about',
+  '/':             'home',
+  '/signup':       'signup',
+  '/about':        'about',
   '/set-password': 'set-password',
+};
+
+const PAGE_TO_PATH = {
+  home:   '/',
+  signup: '/signup',
+  about:  '/about',
 };
 
 function App() {
@@ -27,7 +33,23 @@ function App() {
   const handleNavigate = (page, step = 'choose') => {
     setCurrentPage(page);
     setInitialStep(step);
+    const path = PAGE_TO_PATH[page];
+    if (path && window.location.pathname !== path) {
+      window.history.pushState(null, '', path);
+    }
   };
+
+  // Handle browser back/forward buttons
+  React.useEffect(() => {
+    const onPopState = () => {
+      const page = PATH_TO_PAGE[window.location.pathname] ?? '404';
+      if (page !== 'set-password' && page !== '404') {
+        setCurrentPage(page);
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   if (initialPage === 'set-password') return <SetPassword />;
   if (initialPage === '404') return <NotFoundPage onNavigate={handleNavigate} />;
