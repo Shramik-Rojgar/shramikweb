@@ -6,14 +6,20 @@ import SetPassword from './components/SetPassword';
 import NotFoundPage from './components/NotFoundPage';
 import './App.css';
 
-const VALID_PATHS = ['/', '/set-password'];
+const PATH_TO_PAGE = {
+  '/':            'home',
+  '/signup':      'signup',
+  '/about':       'about',
+  '/set-password': 'set-password',
+};
 
 function App() {
   const pathname = window.location.pathname;
-  const isSetPassword = pathname === '/set-password';
-  const isUnknownPath = !VALID_PATHS.includes(pathname);
+  const initialPage = PATH_TO_PAGE[pathname] ?? '404';
 
-  const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'signup' | 'about'
+  const [currentPage, setCurrentPage] = useState(
+    initialPage === 'set-password' || initialPage === '404' ? 'home' : initialPage
+  );
   const [aud, setAud] = useState('hire'); // 'hire' | 'work'
   const [initialStep, setInitialStep] = useState('choose');
   const [language, setLanguage] = useState('hi'); // Default is Hindi as per guidelines
@@ -23,8 +29,8 @@ function App() {
     setInitialStep(step);
   };
 
-  if (isSetPassword) return <SetPassword />;
-  if (isUnknownPath) return <NotFoundPage onNavigate={handleNavigate} />;
+  if (initialPage === 'set-password') return <SetPassword />;
+  if (initialPage === '404') return <NotFoundPage onNavigate={handleNavigate} />;
 
   return (
     <div className="app-root">
