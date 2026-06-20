@@ -33,6 +33,18 @@ export default function SetPassword() {
       setError('Password must be at least 8 characters.');
       return;
     }
+    if (!/[A-Z]/.test(password)) {
+      setError('Password must contain at least one uppercase letter.');
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError('Password must contain at least one number.');
+      return;
+    }
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      setError('Password must contain at least one special character (e.g. @, #, !).');
+      return;
+    }
     if (password !== confirm) {
       setError('Passwords do not match.');
       return;
@@ -116,7 +128,7 @@ export default function SetPassword() {
                   type="password"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="Min. 8 characters"
+                  placeholder="Min. 8 chars, 1 uppercase, 1 number, 1 special"
                   required
                   className="w-full rounded-xl border border-[rgba(20,16,28,0.10)] bg-white/80 px-4 py-3 text-sm font-medium text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
                 />

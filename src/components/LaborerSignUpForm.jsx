@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { translations } from '../lib/translations';
 import { supabase } from '../lib/supabase';
-import { uploadFile } from '../lib/storage';
+import { uploadFile, validateImageFile, validateDocFile } from '../lib/storage';
 import { usePageMeta } from '../lib/usePageMeta';
 
 // ── Icon helpers ────────────────────────────────────────────────────────────
@@ -108,6 +108,9 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
   const [isSuccess,    setIsSuccess]    = useState(false);
   const [isDuplicate,  setIsDuplicate]  = useState(false);
 
+  // Client-side rate limiting: one submission per 30 seconds
+  const lastSubmitAt = React.useRef(0);
+
   const t = translations[language].laborer;
   const L = (hi, en) => language === 'hi' ? hi : en;
 
@@ -129,6 +132,13 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    try {
+      validateImageFile(file);
+    } catch (err) {
+      setErrors(p => ({ ...p, photo: err.message }));
+      e.target.value = '';
+      return;
+    }
     setPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
     if (errors.photo) setErrors(p => ({ ...p, photo: '' }));
@@ -137,6 +147,13 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
   const handleGovIdChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    try {
+      validateDocFile(file);
+    } catch (err) {
+      setErrors(p => ({ ...p, govId: err.message }));
+      e.target.value = '';
+      return;
+    }
     setGovIdFile(file);
     setGovIdName(file.name);
     if (errors.govId) setErrors(p => ({ ...p, govId: '' }));
@@ -181,21 +198,46 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
   // ── Validation ───────────────────────────────────────────
   const validate = () => {
     const e = {};
-    if (!formData.name.trim())  e.name       = L('पूरा नाम आवश्यक है', 'Full name is required');
-    if (!formData.phone.trim()) e.phone      = L('मोबाइल नंबर आवश्यक है', 'Mobile number is required');
-    else if (!/^\d{10}$/.test(formData.phone))
-                                 e.phone      = L('१०-अंकों का नंबर दर्ज करें', 'Enter a valid 10-digit mobile number');
-    if (!formData.dob)           e.dob        = L('जन्म तिथि आवश्यक है', 'Date of birth is required');
-    if (!formData.gender)        e.gender     = L('लिंग चुनें', 'Select gender');
-    if (!photoFile)              e.photo      = L('प्रोफ़ाइल फ़ोटो अनिवार्य है', 'Profile photo is required');
-    if (!govIdFile)              e.govId      = L('सरकारी ID अनिवार्य है', 'Government ID is required');
+    const name = formData.name.trim();
+    if (!name)
+      e.name = L('पूरा नाम आवश्यक है', 'Full name is required');
+    else if (name.length > 100)
+      e.name = L('नाम बहुत लंबा है', 'Name is too long');
+
+    if (!formData.phone.trim())
+      e.phone = L('मोबाइल नंबर आवश्यक है', 'Mobile number is required');
+    else if (!/^[6-9]\d{9}$/.test(formData.phone))
+      e.phone = L('वैध भारतीय मोबाइल नंबर दर्ज करें', 'Enter a valid Indian mobile number');
+
+    if (!formData.dob) {
+      e.dob = L('जन्म तिथि आवश्यक है', 'Date of birth is required');
+    } else {
+      const today = new Date();
+      const dob   = new Date(formData.dob);
+      const age   = today.getFullYear() - dob.getFullYear() -
+        (today < new Date(today.getFullYear(), dob.getMonth(), dob.getDate()) ? 1 : 0);
+      if (age < 18)
+        e.dob = L('आपकी आयु कम से कम 18 वर्ष होनी चाहिए', 'You must be at least 18 years old');
+      if (age > 80)
+        e.dob = L('कृपया सही जन्म तिथि दर्ज करें', 'Please enter a valid date of birth');
+    }
+
+    if (!formData.gender)       e.gender     = L('लिंग चुनें', 'Select gender');
+    if (!photoFile)             e.photo      = L('प्रोफ़ाइल फ़ोटो अनिवार्य है', 'Profile photo is required');
+    if (!govIdFile)             e.govId      = L('सरकारी ID अनिवार्य है', 'Government ID is required');
     if (formData.skills.length === 0)
-                                 e.skills     = L('कम से कम एक हुनर चुनें', 'Select at least one skill');
+                                e.skills     = L('कम से कम एक हुनर चुनें', 'Select at least one skill');
     if (othersSelected && !otherSkill.trim())
-                                 e.otherSkill = L('कृपया अपना हुनर लिखें', 'Please enter your skill');
-    if (!formData.experience)    e.experience = L('अनुभव चुनें', 'Select experience level');
-    if (!formData.city.trim())   e.city       = L('शहर आवश्यक है', 'City is required');
-    if (!formData.state.trim())  e.state      = L('राज्य आवश्यक है', 'State is required');
+                                e.otherSkill = L('कृपया अपना हुनर लिखें', 'Please enter your skill');
+    else if (othersSelected && otherSkill.trim().length > 50)
+                                e.otherSkill = L('हुनर का नाम बहुत लंबा है', 'Skill name is too long');
+    if (!formData.experience)   e.experience = L('अनुभव चुनें', 'Select experience level');
+    if (!formData.city.trim())  e.city       = L('शहर आवश्यक है', 'City is required');
+    else if (formData.city.trim().length > 100)
+                                e.city       = L('शहर का नाम बहुत लंबा है', 'City name is too long');
+    if (!formData.state.trim()) e.state      = L('राज्य आवश्यक है', 'State is required');
+    if (formData.dailyWage > 50000)
+                                e.wage       = L('कृपया वास्तविक दैनिक मजदूरी दर्ज करें', 'Please enter a realistic daily wage');
     return e;
   };
 
@@ -205,6 +247,13 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
   // ── Submit ───────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const now = Date.now();
+    if (now - lastSubmitAt.current < 30_000) {
+      setErrors({ submit: L('कृपया दोबारा कोशिश करने से पहले 30 सेकंड प्रतीक्षा करें।', 'Please wait 30 seconds before trying again.') });
+      return;
+    }
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -212,6 +261,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       return;
     }
 
+    lastSubmitAt.current = now;
     setIsSubmitting(true);
     setErrors({});
 
@@ -242,17 +292,17 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       const { error: insertError } = await supabase
         .from('labourers')
         .insert({
-          full_name:          formData.name.trim(),
+          full_name:          formData.name.trim().slice(0, 100),
           mobile_no:          phone,
           date_of_birth:      formData.dob,
           gender:             formData.gender,
-          skill_1:            skill1,
-          skill_2:            skill2 ?? null,
-          skill_3:            skill3 ?? null,
+          skill_1:            skill1?.slice(0, 50),
+          skill_2:            skill2?.slice(0, 50) ?? null,
+          skill_3:            skill3?.slice(0, 50) ?? null,
           experience_level:   formData.experience,
-          daily_wage:         formData.dailyWage,
-          city:               formData.city.trim(),
-          state:              formData.state.trim(),
+          daily_wage:         Math.min(Math.max(300, formData.dailyWage), 50000),
+          city:               formData.city.trim().slice(0, 100),
+          state:              formData.state.trim().slice(0, 100),
           status:             'pending',
           photo_url:          photoUrl,
           government_id_url:  govIdUrl,

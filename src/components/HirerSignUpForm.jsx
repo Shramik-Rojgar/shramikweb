@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { translations } from '../lib/translations';
 import { supabase } from '../lib/supabase';
-import { uploadFile } from '../lib/storage';
+import { uploadFile, validateDocFile } from '../lib/storage';
 import { usePageMeta } from '../lib/usePageMeta';
 
 const INDIAN_STATES = [
@@ -45,6 +45,8 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
   const [isSuccess, setIsSuccess] = useState(false);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [submitStage, setSubmitStage] = useState('');
+
+  const lastSubmitAt = React.useRef(0);
 
   const t = translations[language].hirer;
   const L = (hi, en) => language === 'hi' ? hi : en;
@@ -86,16 +88,22 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
     const e = {};
     if (!formData.firstName.trim())
       e.firstName = L('पहला नाम आवश्यक है', 'First name is required');
+    else if (formData.firstName.trim().length > 50)
+      e.firstName = L('नाम बहुत लंबा है', 'First name is too long');
     if (!formData.lastName.trim())
       e.lastName = L('अंतिम नाम आवश्यक है', 'Last name is required');
+    else if (formData.lastName.trim().length > 50)
+      e.lastName = L('नाम बहुत लंबा है', 'Last name is too long');
     if (!formData.mobile.trim())
       e.mobile = L('मोबाइल नंबर आवश्यक है', 'Mobile number is required');
-    else if (!/^\d{10}$/.test(formData.mobile))
-      e.mobile = L('कृपया 10-अंकों का वैध मोबाइल नंबर दर्ज करें', 'Please enter a valid 10-digit mobile number');
+    else if (!/^[6-9]\d{9}$/.test(formData.mobile))
+      e.mobile = L('वैध भारतीय मोबाइल नंबर दर्ज करें', 'Enter a valid Indian mobile number');
     if (!formData.email.trim())
       e.email = L('ईमेल आवश्यक है', 'Email is required');
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(formData.email))
       e.email = L('कृपया वैध ईमेल दर्ज करें', 'Please enter a valid email address');
+    else if (formData.email.length > 254)
+      e.email = L('ईमेल बहुत लंबा है', 'Email is too long');
     if (!formData.city.trim())
       e.city = L('शहर आवश्यक है', 'City is required');
     if (!formData.state.trim())
@@ -113,6 +121,13 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
 
   const handleHirerSubmit = async (e) => {
     e.preventDefault();
+
+    const now = Date.now();
+    if (now - lastSubmitAt.current < 30_000) {
+      setErrors({ submit: L('कृपया दोबारा कोशिश करने से पहले 30 सेकंड प्रतीक्षा करें।', 'Please wait 30 seconds before trying again.') });
+      return;
+    }
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -120,6 +135,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
       return;
     }
 
+    lastSubmitAt.current = now;
     setIsSubmitting(true);
     setErrors({});
 
@@ -143,6 +159,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
       // 1. Upload Aadhaar only for Individual
       let aadharUrl = null;
       if (isIndividual) {
+        try { validateDocFile(aadhaarFile); } catch (err) { throw new Error(err.message); }
         setSubmitStage(L('आधार अपलोड हो रहा है…', 'Uploading Aadhaar…'));
         aadharUrl = await uploadFile(aadhaarFile, 'hireraadhaar', phone);
       }
@@ -152,17 +169,17 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
       const { error: insertError } = await supabase
         .from('hirers')
         .insert({
-          first_name:   formData.firstName.trim(),
-          last_name:    formData.lastName.trim(),
+          first_name:   formData.firstName.trim().slice(0, 50),
+          last_name:    formData.lastName.trim().slice(0, 50),
           mobile_no:    phone,
-          email:        email,
-          address:      formData.address.trim() || null,
+          email:        email?.slice(0, 254) || null,
+          address:      formData.address.trim().slice(0, 500) || null,
           pincode:      formData.pincode.trim() || null,
-          city:         formData.city.trim(),
-          state:        formData.state.trim(),
+          city:         formData.city.trim().slice(0, 100),
+          state:        formData.state.trim().slice(0, 100),
           entity_type:  formData.entityType,
-          company_name: !isIndividual ? formData.companyName.trim() : null,
-          gst_number:   !isIndividual && formData.gstNumber.trim() ? formData.gstNumber.trim().toUpperCase() : null,
+          company_name: !isIndividual ? formData.companyName.trim().slice(0, 200) : null,
+          gst_number:   !isIndividual && formData.gstNumber.trim() ? formData.gstNumber.trim().toUpperCase().slice(0, 15) : null,
           aadhar_url:   aadharUrl,
           status:       'pending',
         });
@@ -525,6 +542,13 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (!file) return;
+                      try {
+                        validateDocFile(file);
+                      } catch (err) {
+                        setErrors(prev => ({ ...prev, aadhaar: err.message }));
+                        e.target.value = '';
+                        return;
+                      }
                       setAadhaarFile(file);
                       setAadhaarName(file.name);
                       if (errors.aadhaar) setErrors(prev => ({ ...prev, aadhaar: '' }));
