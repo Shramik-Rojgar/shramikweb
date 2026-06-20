@@ -3,10 +3,15 @@ import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUpPage';
 import AboutUsPage from './components/AboutUsPage';
 import SetPassword from './components/SetPassword';
+import NotFoundPage from './components/NotFoundPage';
 import './App.css';
 
+const VALID_PATHS = ['/', '/set-password'];
+
 function App() {
-  const isSetPassword = window.location.pathname === '/set-password';
+  const pathname = window.location.pathname;
+  const isSetPassword = pathname === '/set-password';
+  const isUnknownPath = !VALID_PATHS.includes(pathname);
 
   const [currentPage, setCurrentPage] = useState('home'); // 'home' | 'signup' | 'about'
   const [aud, setAud] = useState('hire'); // 'hire' | 'work'
@@ -19,6 +24,7 @@ function App() {
   };
 
   if (isSetPassword) return <SetPassword />;
+  if (isUnknownPath) return <NotFoundPage onNavigate={handleNavigate} />;
 
   return (
     <div className="app-root">
@@ -42,13 +48,16 @@ function App() {
         />
       )}
       {currentPage === 'about' && (
-        <AboutUsPage 
-          onNavigate={handleNavigate} 
-          language={language} 
-          onLanguageChange={setLanguage} 
+        <AboutUsPage
+          onNavigate={handleNavigate}
+          language={language}
+          onLanguageChange={setLanguage}
           aud={aud}
           setAud={setAud}
         />
+      )}
+      {!['home', 'signup', 'about'].includes(currentPage) && (
+        <NotFoundPage onNavigate={handleNavigate} />
       )}
     </div>
   );
