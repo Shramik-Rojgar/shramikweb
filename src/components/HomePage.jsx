@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 import { translations } from '../lib/translations';
 import { usePageMeta } from '../lib/usePageMeta';
-import { ArrowRight, Users, HardHat } from 'lucide-react';
+import { ArrowRight, Users, HardHat, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── icon component + paths ─────────────────────────────────────────────────
@@ -396,8 +396,8 @@ function StatsSection({ language }) {
       lab: language === 'hi' ? 'सत्यापित कामगार\nतैयार हैं' : 'verified workers\nready to start'
     },
     {
-      big: '~4 hr',
-      lab: language === 'hi' ? 'औसत समय\nआगमन का' : 'average time\nto arrival'
+      icon: <MapPin className="w-9 h-9 text-[var(--rani)]" strokeWidth={2} />,
+      lab: language === 'hi' ? 'आपके दरवाज़े\nपर' : 'At your\nfootstep'
     },
     {
       big: '0%',
@@ -413,7 +413,7 @@ function StatsSection({ language }) {
           return (
             <div key={i} className="stat glass text-left">
               <div className="big font-display font-black text-4xl text-[var(--ink)]">
-                <span>{s.big}</span>
+                {s.icon ? s.icon : <span>{s.big}</span>}
                 {s.live && <span className="pulse live-dot ml-2"></span>}
               </div>
               <div className="lab font-sans font-bold text-sm text-[var(--mut)] mt-1.5">
