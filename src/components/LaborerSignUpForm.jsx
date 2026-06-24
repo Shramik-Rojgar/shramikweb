@@ -403,7 +403,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
             </div>
           </div>
         </main>
-        <Footer theme="light" />
+        <Footer theme="light" onNavigate={onNavigate} />
       </div>
     );
   }
@@ -420,7 +420,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           <h2 className="text-2xl font-bold text-[var(--ink)] font-display">{t.successTitle}</h2>
           <p className="text-sm text-slate-500 font-semibold max-w-xs">{t.successSubtitle}</p>
         </main>
-        <Footer theme="light" />
+        <Footer theme="light" onNavigate={onNavigate} />
       </div>
     );
   }
@@ -671,7 +671,7 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           </form>
         </div>
       </main>
-      <Footer theme="light" />
+      <Footer theme="light" onNavigate={onNavigate} />
     </div>
   );
 }

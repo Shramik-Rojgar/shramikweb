@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUpPage';
 import AboutUsPage from './components/AboutUsPage';
+import GalleryPage from './components/GalleryPage';
 import SetPassword from './components/SetPassword';
 import NotFoundPage from './components/NotFoundPage';
 import './App.css';
@@ -10,13 +11,15 @@ const PATH_TO_PAGE = {
   '/':             'home',
   '/signup':       'signup',
   '/about':        'about',
+  '/gallery':      'gallery',
   '/set-password': 'set-password',
 };
 
 const PAGE_TO_PATH = {
-  home:   '/',
-  signup: '/signup',
-  about:  '/about',
+  home:    '/',
+  signup:  '/signup',
+  about:   '/about',
+  gallery: '/gallery',
 };
 
 function App() {
@@ -84,7 +87,16 @@ function App() {
           setAud={setAud}
         />
       )}
-      {!['home', 'signup', 'about'].includes(currentPage) && (
+      {currentPage === 'gallery' && (
+        <GalleryPage
+          onNavigate={handleNavigate}
+          language={language}
+          onLanguageChange={setLanguage}
+          aud={aud}
+          setAud={setAud}
+        />
+      )}
+      {!['home', 'signup', 'about', 'gallery'].includes(currentPage) && (
         <NotFoundPage onNavigate={handleNavigate} />
       )}
     </div>

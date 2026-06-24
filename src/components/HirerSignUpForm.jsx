@@ -273,7 +273,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
             </div>
           </div>
         </main>
-        <Footer theme="light" />
+        <Footer theme="light" onNavigate={onNavigate} />
       </div>
     );
   }
@@ -290,7 +290,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
           <h2 className="text-2xl font-bold text-[var(--ink)] font-display">{t.successTitle}</h2>
           <p className="text-sm text-slate-500 font-semibold max-w-xs">{t.successSubtitle}</p>
         </main>
-        <Footer theme="light" />
+        <Footer theme="light" onNavigate={onNavigate} />
       </div>
     );
   }
@@ -615,7 +615,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
           </form>
         </div>
       </main>
-      <Footer theme="light" />
+      <Footer theme="light" onNavigate={onNavigate} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Footer({ theme = 'light' }) {
+export default function Footer({ theme = 'light', onNavigate }) {
   const isDark = theme === 'dark';
   return (
     <>
@@ -26,6 +26,14 @@ export default function Footer({ theme = 'light' }) {
 
           {/* Right Links */}
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 text-xs md:text-sm font-bold">
+            {onNavigate && (
+              <button
+                onClick={() => onNavigate('gallery')}
+                className="hover:text-[var(--accent)] transition-colors duration-200 cursor-pointer"
+              >
+                Gallery
+              </button>
+            )}
             <a href="#contact" className="hover:text-[var(--accent)] transition-colors duration-200">Contact Us</a>
             <a href="#privacy" className="hover:text-[var(--accent)] transition-colors duration-200">Privacy Policy</a>
             <a href="#terms" className="hover:text-[var(--accent)] transition-colors duration-200">Terms of Service</a>

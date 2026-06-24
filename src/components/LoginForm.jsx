@@ -126,7 +126,7 @@ export default function LoginForm({ onNavigate, onBack, language = 'hi', onLangu
           )}
         </div>
       </main>
-      <Footer theme="light" />
+      <Footer theme="light" onNavigate={onNavigate} />
     </div>
   );
 }

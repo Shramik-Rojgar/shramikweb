@@ -1,7 +1,7 @@
 :root {
   /* FONT FAMILIES */
   --disp: "Space Grotesk", "Baloo 2", system-ui, sans-serif;
-  --body: "Manrope", "Mukta", system-ui, sans-serif;
+  --body: system-ui, -apple-system, sans-serif;
 
   /* 1. PRIMARY BACKGROUNDS & OVERLAYS */
   --page: #FFFAEF;
@@ -25,7 +25,7 @@
 
   /* 4. GRADIENTS */
   --grad: linear-gradient(120deg, #E5397B, #FF8A1E);
-  --grad-soft: linear-gradient(120deg, rgba(229,57,123,0.12), rgba(255,138,30,0.12));
+  --grad-soft: linear-gradient(120deg, rgba(229, 57, 123, 0.12), rgba(255, 138, 30, 0.12));
 
   /* 5. GLASSMORPHISM & CONTAINER STYLING */
   --card: rgba(255, 255, 255, 0.58);

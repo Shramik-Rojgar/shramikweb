@@ -367,7 +367,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
       </div>
 
       {/* Footer Component */}
-      <Footer theme="light" />
+      <Footer theme="light" onNavigate={onNavigate} />
 
     </div>
   );

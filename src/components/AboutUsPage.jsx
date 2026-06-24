@@ -258,7 +258,7 @@ export default function AboutUsPage({ onNavigate, language = 'hi', onLanguageCha
 
       </main>
 
-      <Footer theme="light" />
+      <Footer theme="light" onNavigate={onNavigate} />
     </div>
   );
 }

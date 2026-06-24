@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, UserPlus, Info, Home } from 'lucide-react';
+import { ArrowLeft, UserPlus, Info, Home, Images } from 'lucide-react';
 import Logo from './Logo';
 import { cn } from '@/lib/utils';
 import {
@@ -64,12 +64,19 @@ export default function Header({
                 <UserPlus className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">{language === 'hi' ? 'साइन अप' : 'Sign Up'}</span>
               </button>
-              <button 
-                className={cn("seg-btn cursor-pointer flex items-center gap-1", activeTab === 'about' && "on")} 
+              <button
+                className={cn("seg-btn cursor-pointer flex items-center gap-1", activeTab === 'about' && "on")}
                 onClick={() => onNavigate('about')}
               >
                 <Info className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">{language === 'hi' ? 'हमारे बारे में' : 'About Us'}</span>
+              </button>
+              <button
+                className={cn("seg-btn cursor-pointer flex items-center gap-1", activeTab === 'gallery' && "on")}
+                onClick={() => onNavigate('gallery')}
+              >
+                <Images className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{language === 'hi' ? 'गैलरी' : 'Gallery'}</span>
               </button>
             </div>
           )}

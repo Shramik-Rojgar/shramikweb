@@ -202,7 +202,7 @@ export default function SignUpPage({ onNavigate, initialStep = 'choose', languag
           </div>
         </div>
       </main>
-      <Footer theme="light" />
+      <Footer theme="light" onNavigate={onNavigate} />
     </div>
   );
 }
