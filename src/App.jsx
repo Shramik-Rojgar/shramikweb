@@ -22,9 +22,14 @@ const PAGE_TO_PATH = {
   gallery: '/gallery',
 };
 
+function isSupabaseAuthHash(hash) {
+  return hash.includes('access_token=') || hash.includes('type=recovery') || hash.includes('error=access_denied') || hash.includes('error_code=otp_expired');
+}
+
 function App() {
   const pathname = window.location.pathname;
-  const initialPage = PATH_TO_PAGE[pathname] ?? '404';
+  const hash = window.location.hash;
+  const initialPage = isSupabaseAuthHash(hash) ? 'set-password' : (PATH_TO_PAGE[pathname] ?? '404');
 
   const [currentPage, setCurrentPage] = useState(
     initialPage === 'set-password' || initialPage === '404' ? 'home' : initialPage

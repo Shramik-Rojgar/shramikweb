@@ -9,11 +9,25 @@ export default function SetPassword() {
   const [done,     setDone]       = useState(false);
   const [error,    setError]      = useState('');
   const [ready,    setReady]      = useState(false);
+  const [linkError, setLinkError] = useState('');
   const [countdown, setCountdown] = useState(5);
 
-
-  // Supabase puts the session tokens in the URL hash after redirect
   useEffect(() => {
+    // Check for Supabase error in the URL hash before anything else
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.replace(/^#/, ''));
+    const hashError = params.get('error');
+    const hashErrorCode = params.get('error_code');
+    const hashErrorDesc = params.get('error_description');
+
+    if (hashError) {
+      const msg = hashErrorCode === 'otp_expired'
+        ? 'This password reset link has expired. Please request a new one.'
+        : (hashErrorDesc?.replace(/\+/g, ' ') || 'This link is invalid or has expired.');
+      setLinkError(msg);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       setReady(!!data.session);
     });
@@ -97,7 +111,25 @@ export default function SetPassword() {
           <p className="text-sm font-bold text-[var(--mut)] mt-1">Hirer Portal</p>
         </div>
 
-        {done ? (
+        {linkError ? (
+          <div className="flex flex-col items-center gap-4 text-center py-4">
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl"
+              style={{ background: 'linear-gradient(135deg,#FF8A1E,#E5397B)' }}
+            >
+              ✕
+            </div>
+            <h2 className="font-display font-bold text-xl text-[var(--ink)]">Link Expired</h2>
+            <p className="text-sm text-[var(--mut)] font-semibold leading-relaxed">{linkError}</p>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="mt-2 w-full text-white font-bold py-3 rounded-2xl cursor-pointer"
+              style={{ background: 'var(--grad)' }}
+            >
+              Go to Home
+            </button>
+          </div>
+        ) : done ? (
           <div className="flex flex-col items-center gap-4 text-center py-4">
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl"
