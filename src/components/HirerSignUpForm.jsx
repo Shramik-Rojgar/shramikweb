@@ -2,24 +2,14 @@ import React, { useState } from 'react';
 import BackgroundOrbs from './bg';
 import Header from './Header';
 import Footer from './Footer';
-import { Check, Loader2, Building2, User, ArrowRight, AlertCircle, FileText, ShieldCheck, PhoneCall } from 'lucide-react';
+import { Check, Loader2, ArrowRight, AlertCircle, ShieldCheck, PhoneCall, Eye, EyeOff } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { translations } from '../lib/translations';
-import { supabase } from '../lib/supabase';
-import { uploadFile, validateDocFile } from '../lib/storage';
-import { usePageMeta } from '../lib/usePageMeta';
 
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-  'Delhi', 'Jammu & Kashmir', 'Ladakh', 'Chandigarh', 'Puducherry',
-];
+import { usePageMeta } from '../lib/usePageMeta';
 
 export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', onLanguageChange }) {
   const [formData, setFormData] = useState({
@@ -27,18 +17,11 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
     lastName: '',
     mobile: '',
     email: '',
-    address: '',
-    pincode: '',
-    city: '',
-    state: '',
-    entityType: 'Individual',
-    companyName: '',
-    gstNumber: '',
+    password: '',
     agreeTerms: false,
   });
 
-  const [aadhaarFile, setAadhaarFile] = useState(null);
-  const [aadhaarName, setAadhaarName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,21 +51,7 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
     }
   };
 
-  const isIndividual = formData.entityType === 'Individual';
 
-  const setEntityType = (type) => {
-    setFormData(prev => ({
-      ...prev,
-      entityType: type,
-      companyName: type === 'Individual' ? '' : prev.companyName,
-      gstNumber: type === 'Individual' ? '' : prev.gstNumber,
-    }));
-    if (type !== 'Individual') {
-      setAadhaarFile(null);
-      setAadhaarName('');
-    }
-    setErrors(prev => ({ ...prev, entityType: '', gstNumber: '', aadhaar: '', companyName: '' }));
-  };
 
   const validate = () => {
     const e = {};
@@ -104,16 +73,17 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
       e.email = L('कृपया वैध ईमेल दर्ज करें', 'Please enter a valid email address');
     else if (formData.email.length > 254)
       e.email = L('ईमेल बहुत लंबा है', 'Email is too long');
-    if (!formData.city.trim())
-      e.city = L('शहर आवश्यक है', 'City is required');
-    if (!formData.state.trim())
-      e.state = L('राज्य आवश्यक है', 'State is required');
-    if (!isIndividual && !formData.companyName.trim())
-      e.companyName = L('संस्था का नाम आवश्यक है', 'Company name is required');
-    if (!isIndividual && formData.gstNumber.trim() && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstNumber.trim().toUpperCase()))
-      e.gstNumber = L('कृपया वैध GSTIN दर्ज करें', 'Please enter a valid GSTIN');
-    if (isIndividual && !aadhaarFile)
-      e.aadhaar = L('आधार कार्ड अपलोड करना अनिवार्य है', 'Aadhaar card upload is required');
+    if (!formData.password)
+      e.password = L('पासवर्ड आवश्यक है', 'Password is required');
+    else if (formData.password.length < 8)
+      e.password = L('पासवर्ड कम से कम 8 अक्षरों का होना चाहिए', 'Password must be at least 8 characters');
+    else if (!/[A-Z]/.test(formData.password))
+      e.password = L('कम से कम एक बड़ा अक्षर चाहिए', 'Must contain at least one uppercase letter');
+    else if (!/[0-9]/.test(formData.password))
+      e.password = L('कम से कम एक अंक चाहिए', 'Must contain at least one number');
+    else if (!/[^A-Za-z0-9]/.test(formData.password))
+      e.password = L('कम से कम एक विशेष अक्षर चाहिए (जैसे @, #, !)', 'Must contain at least one special character (e.g. @, #, !)');
+
     if (!formData.agreeTerms)
       e.agreeTerms = L('आपको शर्तों से सहमत होना होगा', 'You must agree to the terms');
     return e;
@@ -141,55 +111,31 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
 
     try {
       const phone = formData.mobile.trim();
-      const email = formData.email.trim().toLowerCase() || null;
+      const email = formData.email.trim().toLowerCase();
 
-      // 0. Pre-check for duplicate mobile or email before uploading anything
-      setSubmitStage(L('जाँच हो रही है…', 'Checking…'));
-      const { data: existing } = await supabase
-        .from('hirers')
-        .select('id')
-        .or(`mobile_no.eq.${phone}${email ? `,email.eq.${email}` : ''}`)
-        .limit(1);
+      setSubmitStage(L('खाता बना रहे हैं…', 'Creating account…'));
 
-      if (existing && existing.length > 0) {
-        setIsDuplicate(true);
-        return;
-      }
+      const res = await fetch('https://kpkmrcieprtwnzjtftki.supabase.co/functions/v1/hirer-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: formData.firstName.trim().slice(0, 50),
+          last_name: formData.lastName.trim().slice(0, 50),
+          mobile_no: phone,
+          email,
+          password: formData.password,
+        }),
+      });
 
-      // 1. Upload Aadhaar only for Individual
-      let aadharUrl = null;
-      if (isIndividual) {
-        try { validateDocFile(aadhaarFile); } catch (err) { throw new Error(err.message); }
-        setSubmitStage(L('आधार अपलोड हो रहा है…', 'Uploading Aadhaar…'));
-        aadharUrl = await uploadFile(aadhaarFile, 'hireraadhaar', phone);
-      }
+      const result = await res.json();
 
-      // 2. Insert hirer record
-      setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
-      const { error: insertError } = await supabase
-        .from('hirers')
-        .insert({
-          first_name:   formData.firstName.trim().slice(0, 50),
-          last_name:    formData.lastName.trim().slice(0, 50),
-          mobile_no:    phone,
-          email:        email?.slice(0, 254) || null,
-          address:      formData.address.trim().slice(0, 500) || null,
-          pincode:      formData.pincode.trim() || null,
-          city:         formData.city.trim().slice(0, 100),
-          state:        formData.state.trim().slice(0, 100),
-          entity_type:  formData.entityType,
-          company_name: !isIndividual ? formData.companyName.trim().slice(0, 200) : null,
-          gst_number:   !isIndividual && formData.gstNumber.trim() ? formData.gstNumber.trim().toUpperCase().slice(0, 15) : null,
-          aadhar_url:   aadharUrl,
-          status:       'pending',
-        });
-
-      if (insertError) {
-        if (insertError.code === '23505') {
+      if (!res.ok) {
+        // 409 = duplicate (email or mobile already registered)
+        if (res.status === 409) {
           setIsDuplicate(true);
           return;
         }
-        throw new Error(insertError.message);
+        throw new Error(result.error || L('कुछ गलत हो गया।', 'Something went wrong.'));
       }
 
       setIsSuccess(true);
@@ -380,216 +326,48 @@ export default function HirerSignUpForm({ onNavigate, onBack, language = 'hi', o
               {errors.email && <span className="text-xs text-red-500">{errors.email}</span>}
             </div>
 
-            {/* ── Address ────────────────────────────────── */}
+            {/* ── Password ─────────────────────────────────── */}
             <div className="flex flex-col gap-1.5">
               <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                {L('पता (वैकल्पिक)', 'Address (Optional)')}
+                {L('पासवर्ड', 'Password')}
               </Label>
-              <textarea
-                name="address"
-                placeholder={L('पूरा पता दर्ज करें', 'Enter full address')}
-                value={formData.address}
-                onChange={handleChange}
-                rows={2}
-                className="glass-input border rounded-xl px-4 py-3 focus:outline-none resize-none text-sm font-semibold"
-                style={{ fontFamily: 'var(--body)' }}
-              />
-            </div>
-
-            {/* ── City + State + Pincode ───────────────────── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.city}</Label>
+              <div className="relative">
                 <Input
-                  type="text"
-                  name="city"
-                  placeholder={L('जैसे: गुरुग्राम', 'e.g. Gurugram')}
-                  value={formData.city}
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  placeholder={L('पासवर्ड बनाएं', 'Create a password')}
+                  value={formData.password}
                   onChange={handleChange}
-                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.city ? 'border-red-400' : ''}`}
+                  className={`glass-input h-12 border rounded-xl px-4 py-3 pr-12 focus:outline-none ${errors.password ? 'border-red-400' : ''}`}
                 />
-                {errors.city && <span className="text-xs text-red-500">{errors.city}</span>}
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.state}</Label>
-                <select
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  className={`glass-input h-12 border rounded-xl px-4 focus:outline-none bg-white/85 text-sm font-semibold cursor-pointer ${errors.state ? 'border-red-400' : ''}`}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(p => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                  tabIndex={-1}
                 >
-                  <option value="">{L('राज्य चुनें', 'Select State')}</option>
-                  {INDIAN_STATES.map(s => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                {errors.state && <span className="text-xs text-red-500">{errors.state}</span>}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
+              <p className="text-[10px] text-slate-400 font-semibold">
+                {L('कम से कम 8 अक्षर, 1 बड़ा अक्षर, 1 अंक, 1 विशेष अक्षर', 'Min 8 chars, 1 uppercase, 1 number, 1 special char')}
+              </p>
+              {errors.password && <span className="text-xs text-red-500">{errors.password}</span>}
             </div>
-
-            {/* ── Pincode ─────────────────────────────────── */}
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                {L('पिनकोड (वैकल्पिक)', 'Pincode (Optional)')}
-              </Label>
-              <Input
-                type="text"
-                name="pincode"
-                placeholder={L('जैसे: 110001', 'e.g. 110001')}
-                value={formData.pincode}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, '').slice(0, 6);
-                  setFormData(prev => ({ ...prev, pincode: val }));
-                }}
-                maxLength={6}
-                className="glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none w-40"
-              />
-            </div>
-
-            {/* ── Entity Type ────────────────────────────── */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.entityType}</Label>
-              <div className="grid grid-cols-2 gap-2.5 mt-1">
-                {[
-                  { value: 'Individual', icon: <User className="w-4 h-4" />, hi: 'व्यक्तिगत', en: 'Individual' },
-                  { value: 'Contractor', icon: <Building2 className="w-4 h-4" />, hi: 'ठेकेदार', en: 'Contractor' },
-                  { value: 'Builder',    icon: <Building2 className="w-4 h-4" />, hi: 'बिल्डर', en: 'Builder' },
-                  { value: 'Company',   icon: <Building2 className="w-4 h-4" />, hi: 'कंपनी', en: 'Company' },
-                ].map(opt => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setEntityType(opt.value)}
-                    className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 font-semibold text-sm transition-all duration-200 cursor-pointer ${
-                      formData.entityType === opt.value
-                        ? 'border-[var(--accent)] bg-[rgba(201,29,94,0.06)] text-[var(--accent)] shadow-sm'
-                        : 'border-slate-200 bg-white/60 text-slate-600 hover:border-slate-300'
-                    }`}
-                  >
-                    {opt.icon}
-                    <span>{language === 'hi' ? opt.hi : opt.en}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* ── Company Name (non-Individual) ──────────── */}
-            {!isIndividual && (
-              <div className="flex flex-col gap-1.5 animate-[fadeSlideIn_0.3s_ease-out]">
-                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  {L('संस्था / कंपनी का नाम', 'Company / Firm Name')}
-                </Label>
-                <Input
-                  type="text"
-                  name="companyName"
-                  placeholder={L('संस्था का नाम दर्ज करें', 'Enter company name')}
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none ${errors.companyName ? 'border-red-400' : ''}`}
-                />
-                {errors.companyName && <span className="text-xs text-red-500">{errors.companyName}</span>}
-              </div>
-            )}
-
-            {/* ── GST Number (optional, non-Individual) ─── */}
-            {!isIndividual && (
-              <div className="flex flex-col gap-1.5 animate-[fadeSlideIn_0.3s_ease-out]">
-                <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  {L('GST नंबर (वैकल्पिक)', 'GST Number (Optional)')}
-                </Label>
-                <Input
-                  type="text"
-                  name="gstNumber"
-                  placeholder={L('जैसे: 22AAAAA0000A1Z5', 'e.g. 22AAAAA0000A1Z5')}
-                  value={formData.gstNumber}
-                  onChange={(e) => {
-                    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                    setFormData(prev => ({ ...prev, gstNumber: val }));
-                    if (errors.gstNumber) setErrors(prev => ({ ...prev, gstNumber: '' }));
-                  }}
-                  maxLength={15}
-                  className={`glass-input h-12 border rounded-xl px-4 py-3 focus:outline-none font-mono tracking-wider ${errors.gstNumber ? 'border-red-400' : ''}`}
-                />
-                <p className="text-[10px] text-slate-400 font-semibold">{L('15-अंकों का GST नंबर', '15-character GST number')}</p>
-                {errors.gstNumber && <span className="text-xs text-red-500">{errors.gstNumber}</span>}
-              </div>
-            )}
-
-            {/* ── Aadhaar Card Upload (Individual only) ──── */}
-            {isIndividual && (
-            <div className="flex flex-col gap-2 animate-[fadeSlideIn_0.3s_ease-out]">
-              <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                {L('आधार कार्ड अपलोड करें', 'Upload Aadhaar Card')}
-              </Label>
-              <div className="flex items-center gap-4 mt-1">
-                <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center flex-shrink-0 transition-all ${
-                  aadhaarFile
-                    ? 'bg-[#E4F7EC] border-[#16B364]/30'
-                    : 'bg-slate-100 border-[#DDE3EA]'
-                }`}>
-                  {aadhaarFile
-                    ? <Check className="w-6 h-6 text-[#16B364] stroke-[3]" />
-                    : <FileText className="w-6 h-6 text-slate-400" />
-                  }
-                </div>
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*,application/pdf"
-                    id="aadhaar-input"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (!file) return;
-                      try {
-                        validateDocFile(file);
-                      } catch (err) {
-                        setErrors(prev => ({ ...prev, aadhaar: err.message }));
-                        e.target.value = '';
-                        return;
-                      }
-                      setAadhaarFile(file);
-                      setAadhaarName(file.name);
-                      if (errors.aadhaar) setErrors(prev => ({ ...prev, aadhaar: '' }));
-                    }}
-                  />
-                  <label
-                    htmlFor="aadhaar-input"
-                    className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300/60 cursor-pointer transition-all text-xs md:text-sm"
-                  >
-                    <FileText className="w-4 h-4 text-slate-500" />
-                    <span>{L('आधार अपलोड करें', 'Upload Aadhaar')}</span>
-                  </label>
-                  {aadhaarName && (
-                    <p className="text-[10px] text-slate-500 mt-1.5 font-semibold truncate max-w-[220px]">{aadhaarName}</p>
-                  )}
-                  <p className="text-[10px] text-slate-400 mt-0.5 font-semibold">
-                    {L('आधार कार्ड — JPG/PNG/PDF', 'Aadhaar Card — JPG/PNG/PDF')}
-                  </p>
-                  {errors.aadhaar && <span className="text-xs text-red-500 block mt-1">{errors.aadhaar}</span>}
-                </div>
-              </div>
-            </div>
-            )}
-
             {/* ── Terms of Service Checkbox ───────────────── */}
             <div className="flex gap-3.5 items-start mt-2">
-              <Checkbox
+              <input
+                type="checkbox"
                 id="agreeTerms"
+                name="agreeTerms"
                 checked={formData.agreeTerms}
-                onCheckedChange={(checked) => {
-                  setFormData(prev => ({ ...prev, agreeTerms: checked === true }));
-                  if (errors.agreeTerms) {
-                    setErrors(prev => ({ ...prev, agreeTerms: '' }));
-                  }
-                }}
-                className="mt-0.5 border-slate-300 data-[state=checked]:bg-accent data-[state=checked]:border-accent data-[state=checked]:text-white cursor-pointer"
+                onChange={handleChange}
+                className="mt-1 w-4 h-4 rounded cursor-pointer accent-[var(--accent)]"
               />
               <div className="flex flex-col text-left">
-                <Label htmlFor="agreeTerms" className="text-xs text-[#5B6B7B] cursor-pointer font-semibold leading-relaxed">
+                <label htmlFor="agreeTerms" className="text-xs text-[#5B6B7B] cursor-pointer font-semibold leading-relaxed select-none">
                   {t.agreeTerms}
-                </Label>
+                </label>
                 {errors.agreeTerms && <span className="text-xs text-red-500 mt-0.5">{errors.agreeTerms}</span>}
               </div>
             </div>
