@@ -137,7 +137,7 @@ export const translations = {
           { ic: 'lock', text: 'Fixed rates' }
         ],
         stats: [
-          { big: '12,480', live: true, lab: 'verified workers\nready to start' },
+          { big: '1,000 +', live: true, lab: 'verified workers\nready to start' },
           { big: '~4 hr', lab: 'average time\nto arrival' },
           { big: '100%', lab: 'fixed rates — no\nhaggling on site' }
         ],
@@ -181,7 +181,7 @@ export const translations = {
           { ic: 'check', text: 'Free to join' }
         ],
         stats: [
-          { big: '12,480', live: true, lab: 'workers already\nready' },
+          { big: '1,000', live: true, lab: 'workers already\nready' },
           { big: '0%', lab: 'cut — full pay\nto your account' },
           { big: 'Daily', lab: 'payouts — money\non the work day' }
         ],
@@ -353,7 +353,7 @@ export const translations = {
           { ic: 'lock', text: 'फिक्स रेट' }
         ],
         stats: [
-          { big: '12,480', live: true, lab: 'सत्यापित कारीगर\nतैयार हैं' },
+          { big: '1,000', live: true, lab: 'सत्यापित कारीगर\nतैयार हैं' },
           { big: '~4 hr', lab: 'औसत पहुँचने\nका समय' },
           { big: '100%', lab: 'फिक्स रेट — साइट पर\nकोई मोलभाव नहीं' }
         ],
@@ -397,7 +397,7 @@ export const translations = {
           { ic: 'check', text: 'जुड़ना मुफ़्त' }
         ],
         stats: [
-          { big: '12,480', live: true, lab: 'कारीगर पहले से\nतैयार हैं' },
+          { big: '1,000', live: true, lab: 'कारीगर पहले से\nतैयार हैं' },
           { big: '0%', lab: 'कटौती — पूरा पैसा\nआपके खाते में' },
           { big: 'रोजँ', lab: 'भुगतान — काम के\nदिन ही पैसा' }
         ],

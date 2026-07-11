@@ -118,7 +118,6 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             {/* Left Copy Column */}
             <div className="hero-copy text-left">
               <div className="eyebrow">
-                <span className="pulse live-dot" style={{ background: 'var(--saffron)', boxShadow: '0 0 0 4px rgba(255,138,30,0.18)' }}></span>
                 <span>{tHire.eyebrow}</span>
               </div>
               <h1 className="h1">
@@ -180,7 +179,6 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             {/* Right Copy Column */}
             <div className="hero-copy text-left order-1 md:order-2">
               <div className="eyebrow">
-                <span className="pulse live-dot" style={{ background: 'var(--saffron)', boxShadow: '0 0 0 4px rgba(255,138,30,0.18)' }}></span>
                 <span>{tWork.eyebrow}</span>
               </div>
               <h1 className="h1">
@@ -313,7 +311,7 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
             <div className="sec-head" style={{ textAlign: 'left', margin: 0, maxWidth: 'none' }}>
               <div className="eyebrow" style={{ justifyContent: 'flex-start' }}>{tCommon.questionsEyebrow}</div>
               <h2>{tCommon.questionsTitle}</h2>
-              <p style={{ marginLeft: 0 }}>{tCommon.questionsSub}</p>
+
 
               {/* Tab switcher inside FAQ */}
               <div className="flex justify-start mt-6">
@@ -391,7 +389,7 @@ function StatsSection({ language }) {
 
   const stats = [
     {
-      big: '12,480',
+      big: '1,000',
       live: true,
       lab: language === 'hi' ? 'सत्यापित कामगार\nतैयार हैं' : 'verified workers\nready to start'
     },
