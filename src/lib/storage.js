@@ -22,19 +22,42 @@ export function validateDocFile(file) {
 }
 
 /**
- * Upload a file to Supabase Storage and return its public URL.
- * File is stored as {folder}/{workerId}.{ext}
+ * Upload a file to Supabase Storage and return its storage PATH.
+ *
+ * The path key is a random UUID, never the owner's phone number: the bucket
+ * holds government IDs, and a guessable key made them retrievable by anyone who
+ * knew a phone number. Callers store the returned path and exchange it for a
+ * short-lived signed URL at render time via getSignedUrl().
+ *
+ * upsert is off — a UUID key cannot collide, so a conflict means a bug worth
+ * surfacing rather than silently overwriting someone's document. It also has to
+ * stay off: the bucket's RLS grants INSERT only, so an upsert that tried to
+ * replace an existing object would be denied outright.
  */
-export async function uploadFile(file, folder, workerId) {
+export async function uploadFile(file, folder) {
   const ext  = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
-  const path = `${folder}/${workerId}.${ext}`;
+  const path = `${folder}/${crypto.randomUUID()}.${ext}`;
 
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, file, { upsert: true, contentType: file.type });
+    .upload(path, file, { upsert: false, contentType: file.type });
 
   if (error) throw new Error(error.message);
 
-  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return data.publicUrl;
+  return path;
+}
+
+/**
+ * Exchange a stored path for a signed URL. Returns null for empty input so
+ * callers can pass a possibly-absent column straight through.
+ */
+export async function getSignedUrl(path, expiresIn = 300) {
+  if (!path) return null;
+
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .createSignedUrl(path, expiresIn);
+
+  if (error) throw new Error(error.message);
+  return data.signedUrl;
 }

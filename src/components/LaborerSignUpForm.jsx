@@ -283,10 +283,10 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
       }
 
       setSubmitStage(L('फ़ोटो अपलोड हो रही है…', 'Uploading photo…'));
-      const photoUrl = await uploadFile(photoFile, 'laborprofile', phone);
+      const photoPath = await uploadFile(photoFile, 'laborprofile');
 
       setSubmitStage(L('सरकारी ID अपलोड हो रही है…', 'Uploading government ID…'));
-      const govIdUrl = await uploadFile(govIdFile, 'laborgovid', phone);
+      const govIdPath = await uploadFile(govIdFile, 'laborgovid');
 
       setSubmitStage(L('प्रोफ़ाइल सहेज रहे हैं…', 'Saving profile…'));
       const { error: insertError } = await supabase
@@ -304,8 +304,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           city:               formData.city.trim().slice(0, 100),
           state:              formData.state.trim().slice(0, 100),
           status:             'pending',
-          photo_url:          photoUrl,
-          government_id_url:  govIdUrl,
+          photo_url:          photoPath,
+          government_id_url:  govIdPath,
         });
 
       if (insertError) {
