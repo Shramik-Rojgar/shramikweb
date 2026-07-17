@@ -304,8 +304,8 @@ export default function LaborerSignUpForm({ onNavigate, onBack, language = 'hi',
           city:               formData.city.trim().slice(0, 100),
           state:              formData.state.trim().slice(0, 100),
           status:             'pending',
-          photo_url:          photoPath,
-          government_id_url:  govIdPath,
+          photo_path:         photoPath,
+          government_id_path: govIdPath,
         });
 
       if (insertError) {
