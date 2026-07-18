@@ -20,18 +20,36 @@ export function usePageMeta({ title, description, keywords }) {
     }
     kwTag.setAttribute('content', keywords);
 
-    // OG tags
-    setOg('og:title', title);
-    setOg('og:description', description);
+    // Canonical link
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+      canonicalTag = document.createElement('link');
+      canonicalTag.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalTag);
+    }
+    canonicalTag.setAttribute('href', `https://shramikrojgar.in${window.location.pathname}`);
+
+    // OG & Twitter tags
+    setMetaTag('property', 'og:title', title);
+    setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:url', `https://shramikrojgar.in${window.location.pathname}`);
+    setMetaTag('property', 'og:type', 'website');
+    setMetaTag('property', 'og:image', 'https://shramikrojgar.in/fav/android-chrome-512x512.png');
+    
+    setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:title', title);
+    setMetaTag('name', 'twitter:description', description);
+    setMetaTag('name', 'twitter:image', 'https://shramikrojgar.in/fav/android-chrome-512x512.png');
   }, [title, description, keywords]);
 }
 
-function setOg(property, content) {
-  let tag = document.querySelector(`meta[property="${property}"]`);
+function setMetaTag(attrName, attrValue, content) {
+  let tag = document.querySelector(`meta[${attrName}="${attrValue}"]`);
   if (!tag) {
     tag = document.createElement('meta');
-    tag.setAttribute('property', property);
+    tag.setAttribute(attrName, attrValue);
     document.head.appendChild(tag);
   }
   tag.setAttribute('content', content);
 }
+

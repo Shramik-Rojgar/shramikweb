@@ -181,10 +181,10 @@ export default function HomePage({ onNavigate, language = 'hi', onLanguageChange
               <div className="eyebrow">
                 <span>{tWork.eyebrow}</span>
               </div>
-              <h1 className="h1">
+              <h2 className="h1">
                 {tWork.h1a}<br />
                 <span className="grad">{tWork.h1b}</span>
-              </h1>
+              </h2>
               <p className="sub">{tWork.sub}</p>
 
               <div className="hero-actions">
