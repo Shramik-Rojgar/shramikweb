@@ -5,6 +5,7 @@ import AboutUsPage from './components/AboutUsPage';
 import GalleryPage from './components/GalleryPage';
 import SetPassword from './components/SetPassword';
 import NotFoundPage from './components/NotFoundPage';
+import FieldExecutiveOnboarding from './components/FieldExecutiveOnboarding';
 import './App.css';
 
 const PATH_TO_PAGE = {
@@ -12,14 +13,16 @@ const PATH_TO_PAGE = {
   '/signup':       'signup',
   '/about':        'about',
   '/gallery':      'gallery',
+  '/onboarding':   'onboarding',
   '/set-password': 'set-password',
 };
 
 const PAGE_TO_PATH = {
-  home:    '/',
-  signup:  '/signup',
-  about:   '/about',
-  gallery: '/gallery',
+  home:       '/',
+  signup:     '/signup',
+  about:      '/about',
+  gallery:    '/gallery',
+  onboarding: '/onboarding',
 };
 
 function isSupabaseAuthHash(hash) {
@@ -101,7 +104,14 @@ function App() {
           setAud={setAud}
         />
       )}
-      {!['home', 'signup', 'about', 'gallery'].includes(currentPage) && (
+      {currentPage === 'onboarding' && (
+        <FieldExecutiveOnboarding
+          onNavigate={handleNavigate}
+          language={language}
+          onLanguageChange={setLanguage}
+        />
+      )}
+      {!['home', 'signup', 'about', 'gallery', 'onboarding'].includes(currentPage) && (
         <NotFoundPage onNavigate={handleNavigate} />
       )}
     </div>
