@@ -244,7 +244,7 @@ export default function FieldExecutiveOnboarding({ onNavigate, language = 'hi', 
       />
       <BackgroundOrbs />
 
-      <main className="max-w-xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
+      <main className="w-full mx-auto px-4 sm:px-6 py-6 sm:py-12 flex-grow flex flex-col justify-center text-left">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold text-brand-grad font-display">

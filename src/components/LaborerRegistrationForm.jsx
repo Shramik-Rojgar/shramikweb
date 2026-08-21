@@ -88,6 +88,7 @@ export default function LaborerRegistrationForm({
     skills:      [],
     experience:  '',
     dailyWage:   600,
+    locality:    '',
     city:        '',
     state:       '',
   });
@@ -218,6 +219,9 @@ export default function LaborerRegistrationForm({
     else if (othersSelected && otherSkill.trim().length > 50)
                                 e.otherSkill = L('हुनर का नाम बहुत लंबा है', 'Skill name is too long');
     if (!formData.experience)   e.experience = L('अनुभव चुनें', 'Select experience level');
+    if (!formData.locality.trim()) e.locality = L('मोहल्ला/इलाका आवश्यक है', 'Locality is required');
+    else if (formData.locality.trim().length > 100)
+                                e.locality   = L('मोहल्ले का नाम बहुत लंबा है', 'Locality name is too long');
     if (!formData.city.trim())  e.city       = L('शहर आवश्यक है', 'City is required');
     else if (formData.city.trim().length > 100)
                                 e.city       = L('शहर का नाम बहुत लंबा है', 'City name is too long');
@@ -283,6 +287,7 @@ export default function LaborerRegistrationForm({
         skill_3:            skill3?.slice(0, 50) ?? null,
         experience_level:   formData.experience,
         daily_wage:         Math.min(Math.max(300, formData.dailyWage), 50000),
+        locality:           formData.locality.trim().slice(0, 100),
         city:               formData.city.trim().slice(0, 100),
         state:              formData.state.trim().slice(0, 100),
         status:             'pending',
@@ -323,25 +328,27 @@ export default function LaborerRegistrationForm({
         </div>
       )}
 
-      {/* Full Name */}
-      <div className="flex flex-col gap-2">
-        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.fullName}</Label>
-        <Input type="text" name="name" value={formData.name} onChange={handleChange}
-          placeholder={L('अपना पूरा नाम दर्ज करें', 'Enter your full name')}
-          className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.name ? 'border-red-400' : ''}`}
-        />
-        {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Full Name */}
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.fullName}</Label>
+          <Input type="text" name="name" value={formData.name} onChange={handleChange}
+            placeholder={L('अपना पूरा नाम दर्ज करें', 'Enter your full name')}
+            className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.name ? 'border-red-400' : ''}`}
+          />
+          {errors.name && <span className="text-xs text-red-500">{errors.name}</span>}
+        </div>
 
-      {/* Mobile */}
-      <div className="flex flex-col gap-2">
-        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.phone}</Label>
-        <Input type="tel" name="phone" value={formData.phone} onChange={handleChange}
-          maxLength={10}
-          placeholder={L('१०-अंकों का मोबाइल नंबर', 'Enter 10-digit mobile number')}
-          className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.phone ? 'border-red-400' : ''}`}
-        />
-        {errors.phone && <span className="text-xs text-red-500">{errors.phone}</span>}
+        {/* Mobile */}
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.phone}</Label>
+          <Input type="tel" name="phone" value={formData.phone} onChange={handleChange}
+            maxLength={10}
+            placeholder={L('१०-अंकों का मोबाइल नंबर', 'Enter 10-digit mobile number')}
+            className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.phone ? 'border-red-400' : ''}`}
+          />
+          {errors.phone && <span className="text-xs text-red-500">{errors.phone}</span>}
+        </div>
       </div>
 
       {/* DOB + Gender */}
@@ -368,53 +375,55 @@ export default function LaborerRegistrationForm({
         </div>
       </div>
 
-      {/* Profile Photo */}
-      <div className="flex flex-col gap-2">
-        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.profilePhoto}</Label>
-        <div className="flex items-center gap-5 mt-1">
-          <div className="relative w-20 h-20 rounded-full bg-slate-100 border border-[#DDE3EA] flex items-center justify-center overflow-hidden flex-shrink-0">
-            {photoPreview
-              ? <img src={photoPreview} className="w-full h-full object-cover" alt="Preview" />
-              : <HardHat className="w-8 h-8 text-slate-400" />
-            }
-          </div>
-          <div>
-            <input type="file" accept="image/*" id="photo-input" className="hidden" onChange={handlePhotoChange} />
-            <label htmlFor="photo-input"
-              className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300/60 cursor-pointer transition-all text-xs md:text-sm"
-            >
-              <Camera className="w-4 h-4 text-slate-500" />
-              <span>{t.photoPrompt}</span>
-            </label>
-            <p className="text-[10px] text-slate-400 mt-1.5 font-semibold">{t.photoSubtext}</p>
-            {errors.photo && <span className="text-xs text-red-500 block mt-1">{errors.photo}</span>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Profile Photo */}
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{t.profilePhoto}</Label>
+          <div className="flex items-center gap-5 mt-1">
+            <div className="relative w-20 h-20 rounded-full bg-slate-100 border border-[#DDE3EA] flex items-center justify-center overflow-hidden flex-shrink-0">
+              {photoPreview
+                ? <img src={photoPreview} className="w-full h-full object-cover" alt="Preview" />
+                : <HardHat className="w-8 h-8 text-slate-400" />
+              }
+            </div>
+            <div>
+              <input type="file" accept="image/*" id="photo-input" className="hidden" onChange={handlePhotoChange} />
+              <label htmlFor="photo-input"
+                className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300/60 cursor-pointer transition-all text-xs md:text-sm"
+              >
+                <Camera className="w-4 h-4 text-slate-500" />
+                <span>{t.photoPrompt}</span>
+              </label>
+              <p className="text-[10px] text-slate-400 mt-1.5 font-semibold">{t.photoSubtext}</p>
+              {errors.photo && <span className="text-xs text-red-500 block mt-1">{errors.photo}</span>}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Government ID */}
-      <div className="flex flex-col gap-2">
-        <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-          {L('सरकारी पहचान पत्र (आधार / वोटर ID)', 'Government ID (Aadhaar / Voter ID)')}
-        </Label>
-        <div className="flex items-center gap-4 mt-1">
-          <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center flex-shrink-0 ${govIdFile ? 'bg-[#E4F7EC] border-[#16B364]/30' : 'bg-slate-100 border-[#DDE3EA]'}`}>
-            {govIdFile
-              ? <Check className="w-7 h-7 text-[#16B364] stroke-[3]" />
-              : <FileText className="w-7 h-7 text-slate-400" />
-            }
-          </div>
-          <div>
-            <input type="file" accept="image/*,application/pdf" id="govid-input" className="hidden" onChange={handleGovIdChange} />
-            <label htmlFor="govid-input"
-              className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300/60 cursor-pointer transition-all text-xs md:text-sm"
-            >
-              <FileText className="w-4 h-4 text-slate-500" />
-              <span>{L('ID अपलोड करें', 'Upload ID')}</span>
-            </label>
-            {govIdName && <p className="text-[10px] text-slate-500 mt-1.5 font-semibold truncate max-w-[200px]">{govIdName}</p>}
-            <p className="text-[10px] text-slate-400 mt-0.5 font-semibold">{L('आधार, वोटर ID, पैन — JPG/PNG/PDF', 'Aadhaar, Voter ID, PAN — JPG/PNG/PDF')}</p>
-            {errors.govId && <span className="text-xs text-red-500 block mt-1">{errors.govId}</span>}
+        {/* Government ID */}
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            {L('सरकारी पहचान पत्र (आधार / वोटर ID)', 'Government ID (Aadhaar / Voter ID)')}
+          </Label>
+          <div className="flex items-center gap-4 mt-1">
+            <div className={`w-16 h-16 rounded-2xl border flex items-center justify-center flex-shrink-0 ${govIdFile ? 'bg-[#E4F7EC] border-[#16B364]/30' : 'bg-slate-100 border-[#DDE3EA]'}`}>
+              {govIdFile
+                ? <Check className="w-7 h-7 text-[#16B364] stroke-[3]" />
+                : <FileText className="w-7 h-7 text-slate-400" />
+              }
+            </div>
+            <div>
+              <input type="file" accept="image/*,application/pdf" id="govid-input" className="hidden" onChange={handleGovIdChange} />
+              <label htmlFor="govid-input"
+                className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl border border-slate-300/60 cursor-pointer transition-all text-xs md:text-sm"
+              >
+                <FileText className="w-4 h-4 text-slate-500" />
+                <span>{L('ID अपलोड करें', 'Upload ID')}</span>
+              </label>
+              {govIdName && <p className="text-[10px] text-slate-500 mt-1.5 font-semibold truncate max-w-[200px]">{govIdName}</p>}
+              <p className="text-[10px] text-slate-400 mt-0.5 font-semibold">{L('आधार, वोटर ID, पैन — JPG/PNG/PDF', 'Aadhaar, Voter ID, PAN — JPG/PNG/PDF')}</p>
+              {errors.govId && <span className="text-xs text-red-500 block mt-1">{errors.govId}</span>}
+            </div>
           </div>
         </div>
       </div>
@@ -504,8 +513,18 @@ export default function LaborerRegistrationForm({
         </div>
       </div>
 
-      {/* City + State */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Locality + City + State */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="flex flex-col gap-2">
+          <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            {L('मोहल्ला / इलाका', 'Locality')}
+          </Label>
+          <Input type="text" name="locality" value={formData.locality} onChange={handleChange}
+            placeholder={L('जैसे: सेक्टर 14', 'e.g. Sector 14')}
+            className={`glass-input h-12 border rounded-xl px-4 focus:outline-none ${errors.locality ? 'border-red-400' : ''}`}
+          />
+          {errors.locality && <span className="text-xs text-red-500">{errors.locality}</span>}
+        </div>
         <div className="flex flex-col gap-2">
           <Label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
             {L('शहर', 'City')}
