@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   HardHat,
   Check,
@@ -80,21 +80,38 @@ export default function LaborerRegistrationForm({
   onSuccess,
   onDuplicate,
 }) {
+  // Persist partially filled forms so tab switches / accidental reloads don't erase data.
+  const STORAGE_KEY = registeredBy
+    ? `shramik-onboarding-form-${registeredBy}`
+    : 'shramik-public-signup-form';
+
+  const getSavedState = () => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const saved = getSavedState();
+
   const [formData, setFormData] = useState({
-    name:        '',
-    phone:       '',
-    dob:         '',
-    gender:      '',
-    skills:      [],
-    experience:  '',
-    dailyWage:   600,
-    locality:    '',
-    city:        '',
-    state:       '',
+    name:        saved?.formData?.name        ?? '',
+    phone:       saved?.formData?.phone       ?? '',
+    dob:         saved?.formData?.dob         ?? '',
+    gender:      saved?.formData?.gender      ?? '',
+    skills:      saved?.formData?.skills      ?? [],
+    experience:  saved?.formData?.experience  ?? '',
+    dailyWage:   saved?.formData?.dailyWage   ?? 600,
+    locality:    saved?.formData?.locality    ?? '',
+    city:        saved?.formData?.city        ?? '',
+    state:       saved?.formData?.state       ?? '',
   });
 
-  const [otherSkill,   setOtherSkill]   = useState('');
-  const [wageInput,    setWageInput]    = useState('600');
+  const [otherSkill,   setOtherSkill]   = useState(saved?.otherSkill ?? '');
+  const [wageInput,    setWageInput]    = useState(saved?.wageInput ?? String(saved?.formData?.dailyWage ?? 600));
 
   const [photoFile,    setPhotoFile]    = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -111,6 +128,30 @@ export default function LaborerRegistrationForm({
   const L = (hi, en) => language === 'hi' ? hi : en;
 
   const othersSelected = formData.skills.includes('Others');
+
+  // Save text form state on every change so it survives tab switches / reloads.
+  // File uploads are browser-only and cannot be persisted in sessionStorage,
+  // so photos / IDs will need to be re-selected after a hard refresh.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ formData, otherSkill, wageInput })
+      );
+    } catch {
+      // Ignore storage quota / privacy-mode errors.
+    }
+  }, [STORAGE_KEY, formData, otherSkill, wageInput]);
+
+  const clearSavedState = () => {
+    if (typeof window === 'undefined') return;
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore.
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -196,9 +237,8 @@ export default function LaborerRegistrationForm({
     else if (!/^[6-9]\d{9}$/.test(formData.phone))
       e.phone = L('वैध भारतीय मोबाइल नंबर दर्ज करें', 'Enter a valid Indian mobile number');
 
-    if (!formData.dob) {
-      e.dob = L('जन्म तिथि आवश्यक है', 'Date of birth is required');
-    } else {
+    // DOB is optional at onboarding; admin can fill / correct it later.
+    if (formData.dob) {
       const today = new Date();
       const dob   = new Date(formData.dob);
       const age   = today.getFullYear() - dob.getFullYear() -
@@ -209,7 +249,6 @@ export default function LaborerRegistrationForm({
         e.dob = L('कृपया सही जन्म तिथि दर्ज करें', 'Please enter a valid date of birth');
     }
 
-    if (!formData.gender)       e.gender     = L('लिंग चुनें', 'Select gender');
     if (!photoFile)             e.photo      = L('प्रोफ़ाइल फ़ोटो अनिवार्य है', 'Profile photo is required');
     if (!govIdFile)             e.govId      = L('सरकारी ID अनिवार्य है', 'Government ID is required');
     if (formData.skills.length === 0)
@@ -218,14 +257,14 @@ export default function LaborerRegistrationForm({
                                 e.otherSkill = L('कृपया अपना हुनर लिखें', 'Please enter your skill');
     else if (othersSelected && otherSkill.trim().length > 50)
                                 e.otherSkill = L('हुनर का नाम बहुत लंबा है', 'Skill name is too long');
-    if (!formData.experience)   e.experience = L('अनुभव चुनें', 'Select experience level');
-    if (!formData.locality.trim()) e.locality = L('मोहल्ला/इलाका आवश्यक है', 'Locality is required');
-    else if (formData.locality.trim().length > 100)
+
+    // Optional fields: admin can update these from the panel if needed.
+    if (formData.locality.trim().length > 100)
                                 e.locality   = L('मोहल्ले का नाम बहुत लंबा है', 'Locality name is too long');
-    if (!formData.city.trim())  e.city       = L('शहर आवश्यक है', 'City is required');
-    else if (formData.city.trim().length > 100)
+    if (formData.city.trim().length > 100)
                                 e.city       = L('शहर का नाम बहुत लंबा है', 'City name is too long');
-    if (!formData.state.trim()) e.state      = L('राज्य आवश्यक है', 'State is required');
+    if (formData.state.trim().length > 100)
+                                e.state      = L('राज्य का नाम बहुत लंबा है', 'State name is too long');
     if (formData.dailyWage > 50000)
                                 e.wage       = L('कृपया वास्तविक दैनिक मजदूरी दर्ज करें', 'Please enter a realistic daily wage');
     return e;
@@ -280,16 +319,16 @@ export default function LaborerRegistrationForm({
       const insertPayload = {
         full_name:          formData.name.trim().slice(0, 100),
         mobile_no:          phone,
-        date_of_birth:      formData.dob,
-        gender:             formData.gender,
+        date_of_birth:      formData.dob || null,
+        gender:             formData.gender || null,
         skill_1:            skill1?.slice(0, 50),
         skill_2:            skill2?.slice(0, 50) ?? null,
         skill_3:            skill3?.slice(0, 50) ?? null,
-        experience_level:   formData.experience,
+        experience_level:   formData.experience || null,
         daily_wage:         Math.min(Math.max(300, formData.dailyWage), 50000),
-        locality:           formData.locality.trim().slice(0, 100),
-        city:               formData.city.trim().slice(0, 100),
-        state:              formData.state.trim().slice(0, 100),
+        locality:           formData.locality.trim().slice(0, 100) || null,
+        city:               formData.city.trim().slice(0, 100) || null,
+        state:              formData.state.trim().slice(0, 100) || null,
         status:             'pending',
         photo_path:         photoPath,
         government_id_path: govIdPath,
@@ -309,7 +348,10 @@ export default function LaborerRegistrationForm({
         throw new Error(insertError.message);
       }
 
-      if (onSuccess) onSuccess();
+      if (onSuccess) {
+        clearSavedState();
+        onSuccess();
+      }
     } catch (err) {
       setErrors({ submit: err.message || L('कुछ गलत हो गया। दोबारा कोशिश करें।', 'Something went wrong. Please try again.') });
       window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HomePage from './components/HomePage';
 import SignUpPage from './components/SignUpPage';
 import AboutUsPage from './components/AboutUsPage';
@@ -39,7 +39,10 @@ function App() {
   );
   const [aud, setAud] = useState('hire'); // 'hire' | 'work'
   const [initialStep, setInitialStep] = useState('choose');
-  const [language, setLanguage] = useState('hi'); // Default is Hindi as per guidelines
+  const [language, setLanguage] = useState(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('shramik-language') : null;
+    return saved === 'en' || saved === 'hi' ? saved : 'hi'; // Default is Hindi as per guidelines
+  });
 
   const handleNavigate = (page, step = 'choose') => {
     setCurrentPage(page);
@@ -49,6 +52,11 @@ function App() {
       window.history.pushState(null, '', path);
     }
   };
+
+  // Persist language preference across reloads
+  useEffect(() => {
+    localStorage.setItem('shramik-language', language);
+  }, [language]);
 
   // Handle browser back/forward buttons
   React.useEffect(() => {
